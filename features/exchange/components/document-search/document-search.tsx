@@ -3,6 +3,7 @@
 import { Button, Input, Label, RadioGroup, RadioGroupItem } from "@mfe/cc-front-shared";
 import { useDocumentStore, applyCPFMask, applyCNPJMask } from "../../hooks/use-document-search";
 import { SearchIcon } from "lucide-react";
+import { useExchangeFormStore } from "../../hooks/use-exchange-form";
 
 type DocumentSearchProps = {
   onSearch?: (type: string, value: string) => void
@@ -10,6 +11,7 @@ type DocumentSearchProps = {
 
 function DocumentSearch({ onSearch }: DocumentSearchProps) {
   const { selectedType, documentValue, setSelectedType, setDocumentValue } = useDocumentStore()
+  const { showForm } = useExchangeFormStore()
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault()
@@ -17,6 +19,7 @@ function DocumentSearch({ onSearch }: DocumentSearchProps) {
       selectedType,
       documentValue,
     })
+    showForm(documentValue)
 
     if (onSearch && documentValue.trim()) {
       onSearch(selectedType, documentValue)
