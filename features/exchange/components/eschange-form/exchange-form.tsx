@@ -1,7 +1,7 @@
 "use client"
 import { useEffect } from "react";
 import { useExchangeFormStore } from "../../hooks/use-exchange-form";
-import { Button, Input, Label, RadioGroup, RadioGroupItem, Select, SelectContent, SelectItem, SelectTrigger, SelectValue, Checkbox, Card, CardContent, CardHeader, CardTitle } from "@mfe/cc-front-shared";
+import { Button, Input, Label, RadioGroup, RadioGroupItem, Select, SelectContent, SelectItem, SelectTrigger, SelectValue, Checkbox, Card, CardContent } from "@mfe/cc-front-shared";
 import { RefreshCwIcon } from "lucide-react";
 import { CurrencyInput } from "@/components/ui/currency-input";
 
@@ -49,19 +49,14 @@ function ExchangeForm() {
   };
 
   const formatDecimal = (value: number, decimals: number = 5) => {
-    return value.toFixed(decimals);
+    return value.toFixed(decimals).replace(".", ",");
   };
 
   if (!isVisible) return null;
 
   return (
     <Card className="w-full">
-      <CardHeader className="pb-3">
-        <CardTitle className="text-lg font-semibold">
-          Negociar Câmbio - Documento: {documento}
-        </CardTitle>
-      </CardHeader>
-      <CardContent className="space-y-4">
+      <CardContent className="space-y-4 mt-2">
         {/* Dados da Operação */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-3">
           <div className="space-y-1">
@@ -140,7 +135,7 @@ function ExchangeForm() {
               type="number"
               step="0.01"
               value={formData.taxaAdministrativa}
-              onChange={(e) => handleInputChange('taxaAdministrativa', parseFloat(e.target.value) || 0)}
+              onChange={(e) => handleInputChange('taxaAdministrativa', parseFloat(e.target.value).toFixed(2) || 0)}
               placeholder="12,90"
               className="h-9"
             />

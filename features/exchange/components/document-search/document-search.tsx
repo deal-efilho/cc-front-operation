@@ -4,6 +4,7 @@ import { Button, Input, Label, RadioGroup, RadioGroupItem } from "@mfe/cc-front-
 import { useDocumentStore, applyCPFMask, applyCNPJMask } from "../../hooks/use-document-search";
 import { SearchIcon } from "lucide-react";
 import { useExchangeFormStore } from "../../hooks/use-exchange-form";
+import { useUserDetailsStore } from "../../hooks/use-user-details";
 
 type DocumentSearchProps = {
   onSearch?: (type: string, value: string) => void
@@ -12,6 +13,7 @@ type DocumentSearchProps = {
 function DocumentSearch({ onSearch }: DocumentSearchProps) {
   const { selectedType, documentValue, setSelectedType, setDocumentValue } = useDocumentStore()
   const { showForm } = useExchangeFormStore()
+  const { showUserDetails } = useUserDetailsStore()
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault()
@@ -19,6 +21,9 @@ function DocumentSearch({ onSearch }: DocumentSearchProps) {
       selectedType,
       documentValue,
     })
+
+    // Mostrar as seções quando pesquisar
+    showUserDetails()
     showForm(documentValue)
 
     if (onSearch && documentValue.trim()) {
@@ -74,7 +79,6 @@ function DocumentSearch({ onSearch }: DocumentSearchProps) {
       </RadioGroup>
 
       <div className="flex gap-2">
-
         <Input
           type="text"
           value={documentValue}
