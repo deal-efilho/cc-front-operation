@@ -1,5 +1,5 @@
 import type { ColumnDef } from "@tanstack/react-table";
-import { FileDownIcon, FileTextIcon } from "lucide-react";
+import { FileDownIcon } from "lucide-react";
 import type { HistoryColumn } from "../../mocks/history-data";
 
 const getSituacaoStyle = (situacao: string): string => {

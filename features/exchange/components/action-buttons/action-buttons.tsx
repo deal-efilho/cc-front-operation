@@ -1,8 +1,7 @@
-// features/exchange/components/action-buttons/action-buttons.tsx
 "use client"
 
 import { Button } from "@mfe/cc-front-shared";
-import { UserIcon, ClockIcon } from "lucide-react";
+import { ClockIcon, UserSearchIcon } from "lucide-react";
 import { useModal } from "@/hooks/use-modal";
 import { ContactSelectionModal } from "../contact-selection-modal/contact-selection-modal";
 import { HistoryModal } from "../history-modal/history-modal";
@@ -17,8 +16,6 @@ function ActionButtons({ clientName }: ActionButtonsProps) {
 
   const handleContactSearch = (type: string, value: string) => {
     console.log('Buscar contato:', { type, value })
-    // Aqui você pode implementar a lógica de busca
-    // Por exemplo, fazer uma requisição à API
   }
 
   const handleHistorico = () => {
@@ -33,8 +30,8 @@ function ActionButtons({ clientName }: ActionButtonsProps) {
           onClick={contactModal.open}
           className="flex items-center gap-2"
         >
-          <UserIcon className="size-4" />
-          selecionar
+          <UserSearchIcon className="size-4" />
+          Selecionar
         </Button>
 
         <Button

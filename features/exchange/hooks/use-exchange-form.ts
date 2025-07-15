@@ -14,8 +14,21 @@ export interface ExchangeFormData {
   taxaDesejada: number
   iof: number
   valorTotal: number
+  valorLiquido: number
   campanha: string
   naturezaOperacao: string
+}
+
+export interface AdjustmentData {
+  adjustBy: 'taxa' | 'quantidade'
+  liquidValue: number
+  options: {
+    cedulas200_500_1000: boolean
+    caraGrandeBrancaPequena: boolean
+    foraCirculacao: boolean
+    manchadasRiscadas: boolean
+  }
+  discountApplied?: number
 }
 
 interface ExchangeFormState {
@@ -24,6 +37,8 @@ interface ExchangeFormState {
   documento: string | null
   setFormData: (data: Partial<ExchangeFormData>) => void
   calculateValues: () => void
+  adjustValues: (adjustmentData: AdjustmentData) => void
+  roundValues: () => void
   showForm: (documento: string) => void
   hideForm: () => void
   resetForm: () => void
@@ -43,6 +58,7 @@ const initialFormData: ExchangeFormData = {
   taxaDesejada: 5.08375,
   iof: 0.02,
   valorTotal: 0,
+  valorLiquido: 0,
   campanha: '',
   naturezaOperacao: '32999 - Viagem Internacional'
 }
@@ -72,6 +88,7 @@ export const useExchangeFormStore = create<ExchangeFormState>((set, get) => ({
     const taxaDesejada = taxa * 1.002
     const iof = quantidade * taxa * 0.0038
     const valorTotal = quantidade * taxa + iof + taxaAdministrativa
+    const valorLiquido = valorTotal - taxaAdministrativa - iof
 
     set((state) => ({
       formData: {
@@ -80,7 +97,76 @@ export const useExchangeFormStore = create<ExchangeFormState>((set, get) => ({
         taxaEspecial: Number(taxaEspecial.toFixed(5)),
         taxaDesejada: Number(taxaDesejada.toFixed(5)),
         iof: Number(iof.toFixed(2)),
-        valorTotal: Number(valorTotal.toFixed(2))
+        valorTotal: Number(valorTotal.toFixed(2)),
+        valorLiquido: Number(valorLiquido.toFixed(2))
+      }
+    }))
+  },
+
+  adjustValues: (adjustmentData: AdjustmentData) => {
+    const { formData } = get()
+    const { taxaAdministrativa } = formData
+    let { liquidValue } = adjustmentData
+
+    // Aplicar desconto se selecionado
+    if (adjustmentData.options.cedulas200_500_1000) {
+      liquidValue = liquidValue * 0.88 // 12% de desconto
+    }
+
+    if (adjustmentData.adjustBy === 'taxa') {
+      // Ajustar pela taxa, mantendo a quantidade
+      const quantidade = formData.quantidade
+      const iof = liquidValue * 0.0038
+      const valorTotal = liquidValue + taxaAdministrativa + iof
+      const taxa = (valorTotal - taxaAdministrativa - iof) / quantidade
+
+      set((state) => ({
+        formData: {
+          ...state.formData,
+          taxa: Number(taxa.toFixed(5)),
+          taxaEspecial: Number((taxa * 0.998).toFixed(5)),
+          taxaDesejada: Number((taxa * 1.002).toFixed(5)),
+          iof: Number(iof.toFixed(2)),
+          valorTotal: Number(valorTotal.toFixed(2)),
+          valorLiquido: Number(liquidValue.toFixed(2))
+        }
+      }))
+    } else {
+      // Ajustar pela quantidade, mantendo a taxa
+      const taxa = formData.taxa
+      const quantidade = liquidValue / taxa
+      const iof = quantidade * taxa * 0.0038
+      const valorTotal = quantidade * taxa + iof + taxaAdministrativa
+
+      set((state) => ({
+        formData: {
+          ...state.formData,
+          quantidade: Number(quantidade.toFixed(2)),
+          iof: Number(iof.toFixed(2)),
+          valorTotal: Number(valorTotal.toFixed(2)),
+          valorLiquido: Number(liquidValue.toFixed(2))
+        }
+      }))
+    }
+  },
+
+  roundValues: () => {
+    const { formData } = get()
+    const { taxaAdministrativa } = formData
+
+    const valorTotalRounded = Math.ceil(formData.valorTotal)
+    const valorLiquido = valorTotalRounded - taxaAdministrativa - formData.iof
+
+    const taxa = (valorTotalRounded - taxaAdministrativa - formData.iof) / formData.quantidade
+
+    set((state) => ({
+      formData: {
+        ...state.formData,
+        taxa: Number(taxa.toFixed(5)),
+        taxaEspecial: Number((taxa * 0.998).toFixed(5)),
+        taxaDesejada: Number((taxa * 1.002).toFixed(5)),
+        valorTotal: valorTotalRounded,
+        valorLiquido: Number(valorLiquido.toFixed(2))
       }
     }))
   },
