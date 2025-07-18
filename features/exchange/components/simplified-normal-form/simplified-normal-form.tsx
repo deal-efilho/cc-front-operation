@@ -1,9 +1,11 @@
+// features/exchange/components/simplified-normal-form/simplified-normal-form.tsx
 "use client"
 
 import { useEffect } from "react"
-import { Button, Input, Label, RadioGroup, RadioGroupItem, Select, SelectContent, SelectItem, SelectTrigger, SelectValue, Checkbox, Card, CardContent } from "@mfe/cc-front-shared"
+import { Button, Input, Label, Select, SelectContent, SelectItem, SelectTrigger, SelectValue, Checkbox, Card, CardContent } from "@mfe/cc-front-shared"
 import { RefreshCwIcon, SettingsIcon, PlusIcon, CircleIcon } from "lucide-react"
 import { CurrencyInput } from "@/components/ui/currency-input"
+import { SwitchTwo } from "@/components/ui/switch-two"
 import { useModal } from "@/hooks/use-modal"
 import { AdjustmentModal, type AdjustmentData } from "../adjustment-modal/adjustment-modal"
 import { useOperationsCartStore } from "../../hooks/use-operation-cart"
@@ -194,31 +196,41 @@ export function SimplifiedNormalForm({ commonData }: SimplifiedNormalFormProps) 
   return (
     <>
       <Card className="w-full">
-        <CardContent className="space-y-4 mt-2">
-          {/* Operação e Moeda */}
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <div className="space-y-2">
-              <Label className="text-sm">Operação *</Label>
-              <RadioGroup
-                value={formData.operacao}
-                onValueChange={(value) => handleInputChange('operacao', value)}
-                className="flex gap-4"
-              >
-                <div className="flex items-center space-x-2">
-                  <RadioGroupItem value="COMPRA" id="compra" />
-                  <Label htmlFor="compra" className="text-sm">Compra</Label>
+        <CardContent className="space-y-3 p-4">
+          {/* Linha 1 - Operação, Moeda e Taxa Admin */}
+          <div className="grid grid-cols-12 gap-3 items-end">
+            {/* Operação - 3 colunas */}
+            <div className="col-span-3 space-y-1">
+              <Label className="text-xs">Operação *</Label>
+              <div className="flex flex-col items-center gap-1">
+                <div className="inline-flex items-center gap-2" data-state={formData.operacao === 'VENDA' ? "checked" : "unchecked"}>
+                  <span
+                    className={`flex-1 cursor-pointer text-right text-xs font-medium ${formData.operacao === 'COMPRA' ? 'text-green-600' : 'text-muted-foreground/70'
+                      }`}
+                    onClick={() => handleInputChange('operacao', 'COMPRA')}
+                  >
+                    Compra
+                  </span>
+                  <SwitchTwo
+                    checked={formData.operacao === 'VENDA'}
+                    onCheckedChange={(checked) => handleInputChange('operacao', checked ? 'VENDA' : 'COMPRA')}
+                  />
+                  <span
+                    className={`flex-1 cursor-pointer text-left text-xs font-medium ${formData.operacao === 'VENDA' ? 'text-red-600' : 'text-muted-foreground/70'
+                      }`}
+                    onClick={() => handleInputChange('operacao', 'VENDA')}
+                  >
+                    Venda
+                  </span>
                 </div>
-                <div className="flex items-center space-x-2">
-                  <RadioGroupItem value="VENDA" id="venda" />
-                  <Label htmlFor="venda" className="text-sm">Venda</Label>
-                </div>
-              </RadioGroup>
+              </div>
             </div>
 
-            <div className="space-y-2">
-              <Label htmlFor="moeda" className="text-sm">Moeda *</Label>
+            {/* Moeda - 4 colunas */}
+            <div className="col-span-4 space-y-1">
+              <Label className="text-xs">Moeda *</Label>
               <Select value={formData.moeda} onValueChange={(value) => handleInputChange('moeda', value)}>
-                <SelectTrigger className="h-9">
+                <SelectTrigger className="h-8 text-sm">
                   <SelectValue placeholder="Selecione a moeda" />
                 </SelectTrigger>
                 <SelectContent>
@@ -230,169 +242,165 @@ export function SimplifiedNormalForm({ commonData }: SimplifiedNormalFormProps) 
                 </SelectContent>
               </Select>
             </div>
-          </div>
 
-          {/* Configurações */}
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-            <div className="space-y-2">
-              <Label htmlFor="taxaAdministrativa" className="text-sm">Taxa Administrativa *</Label>
+            {/* Taxa Admin - 3 colunas */}
+            <div className="col-span-3 space-y-1">
+              <Label className="text-xs">Taxa Admin *</Label>
               <Input
-                id="taxaAdministrativa"
                 type="number"
                 step="0.01"
                 value={formData.taxaAdministrativa}
                 onChange={(e) => handleInputChange('taxaAdministrativa', parseFloat(e.target.value) || 0)}
-                className="h-9"
+                className="h-8 text-sm"
               />
             </div>
 
-            <div className="flex items-center space-x-2 pt-6">
-              <Checkbox
-                id="corporate"
-                checked={formData.corporate}
-                disabled={true}
-                onCheckedChange={(checked) => handleInputChange('corporate', checked)}
-              />
-              <Label htmlFor="corporate" className="text-sm opacity-50">Corporate</Label>
-            </div>
-
-            <div className="flex items-center space-x-2 pt-6">
-              <Checkbox
-                id="retiradaHoje"
-                checked={formData.retiradaHoje}
-                onCheckedChange={(checked) => handleInputChange('retiradaHoje', checked)}
-              />
-              <Label htmlFor="retiradaHoje" className="text-sm">Retirada Hoje (D0)</Label>
+            {/* Checkboxes - 2 colunas */}
+            <div className="col-span-2 space-y-1">
+              <div className="space-y-1">
+                <div className="flex items-center space-x-1">
+                  <Checkbox
+                    id="corporate"
+                    checked={formData.corporate}
+                    disabled={true}
+                    onCheckedChange={(checked) => handleInputChange('corporate', checked)}
+                    className="h-3 w-3"
+                  />
+                  <Label htmlFor="corporate" className="text-xs opacity-50">Corporate</Label>
+                </div>
+                <div className="flex items-center space-x-1">
+                  <Checkbox
+                    id="retiradaHoje"
+                    checked={formData.retiradaHoje}
+                    onCheckedChange={(checked) => handleInputChange('retiradaHoje', checked)}
+                    className="h-3 w-3"
+                  />
+                  <Label htmlFor="retiradaHoje" className="text-xs">Retirada D0</Label>
+                </div>
+              </div>
             </div>
           </div>
 
-          {/* Valores */}
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-            <div className="space-y-2">
-              <Label htmlFor="quantidade" className="text-sm">Quantidade *</Label>
+          {/* Linha 2 - Valores principais */}
+          <div className="grid grid-cols-6 gap-3">
+            <div className="space-y-1">
+              <Label className="text-xs">Quantidade *</Label>
               <CurrencyInput
-                id="quantidade"
                 value={formData.quantidade}
                 onChange={(value) => handleInputChange('quantidade', value)}
-                className="h-9"
+                className="h-8 text-sm"
               />
             </div>
 
-            <div className="space-y-2">
-              <Label htmlFor="taxa" className="text-sm">Taxa</Label>
+            <div className="space-y-1">
+              <Label className="text-xs">Taxa</Label>
               <Input
-                id="taxa"
                 type="text"
                 value={formatDecimal(formData.taxa)}
                 readOnly
-                className="bg-gray-50 h-9"
+                className="bg-gray-50 h-8 text-sm"
               />
             </div>
 
-            <div className="space-y-2">
-              <Label htmlFor="valorTotal" className="text-sm">Valor Total</Label>
+            <div className="space-y-1">
+              <Label className="text-xs">Taxa Especial</Label>
               <Input
-                id="valorTotal"
-                type="text"
-                value={formatCurrency(formData.valorTotal)}
-                readOnly
-                className="bg-gray-50 font-semibold h-9"
-              />
-            </div>
-
-            <div className="space-y-2">
-              <Label htmlFor="taxaEspecial" className="text-sm">Taxa Especial</Label>
-              <Input
-                id="taxaEspecial"
                 type="text"
                 value={formatDecimal(formData.taxaEspecial)}
                 readOnly
-                className="bg-gray-50 h-9"
+                className="bg-gray-50 h-8 text-sm"
               />
             </div>
 
-            <div className="space-y-2">
-              <Label htmlFor="iof" className="text-sm">IOF</Label>
+            <div className="space-y-1">
+              <Label className="text-xs">IOF</Label>
               <Input
-                id="iof"
                 type="text"
                 value={formatCurrency(formData.iof)}
                 readOnly
-                className="bg-gray-50 h-9"
+                className="bg-gray-50 h-8 text-sm"
               />
             </div>
 
-            <div className="space-y-2">
-              <Label htmlFor="valorLiquido" className="text-sm">Valor Líquido</Label>
+            <div className="space-y-1">
+              <Label className="text-xs">Valor Total</Label>
               <Input
-                id="valorLiquido"
+                type="text"
+                value={formatCurrency(formData.valorTotal)}
+                readOnly
+                className="bg-gray-50 font-semibold h-8 text-sm"
+              />
+            </div>
+
+            <div className="space-y-1">
+              <Label className="text-xs">Valor Líquido</Label>
+              <Input
                 type="text"
                 value={formatCurrency(formData.valorLiquido)}
                 readOnly
-                className="bg-gray-50 font-semibold h-9"
+                className="bg-gray-50 font-semibold h-8 text-sm"
               />
             </div>
           </div>
 
-          {/* Campanha */}
-          <div className="grid grid-cols-1 gap-4">
-            <div className="space-y-2">
-              <Label htmlFor="campanha" className="text-sm">Campanha</Label>
+          {/* Linha 3 - Campanha */}
+          <div className="grid grid-cols-1">
+            <div className="space-y-1">
+              <Label className="text-xs">Campanha</Label>
               <Input
-                id="campanha"
                 type="text"
                 value={formData.campanha}
                 onChange={(e) => handleInputChange('campanha', e.target.value)}
                 placeholder="Digite a campanha"
-                className="h-9"
+                className="h-8 text-sm"
               />
             </div>
           </div>
 
-          {/* Resumo */}
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 pt-3 border-t">
-            <div className="space-y-1">
-              <Label className="text-sm font-medium text-orange-600">Spread da Operação</Label>
-              <div className="text-xl font-bold text-orange-600">6,00 %</div>
+          {/* Linha 4 - Resumo */}
+          <div className="grid grid-cols-2 gap-4 py-2 border-t">
+            <div>
+              <Label className="text-xs font-medium text-orange-600">Spread da Operação</Label>
+              <div className="text-lg font-bold text-orange-600">6,00 %</div>
             </div>
-            <div className="space-y-1">
-              <Label className="text-sm font-medium text-red-600">Resultado da Operação</Label>
-              <div className="text-xl font-bold text-red-600">R$ 0,33</div>
+            <div>
+              <Label className="text-xs font-medium text-red-600">Resultado da Operação</Label>
+              <div className="text-lg font-bold text-red-600">R$ 0,33</div>
             </div>
           </div>
 
-          {/* Botões de ação */}
-          <div className="flex gap-2 pt-2">
+          {/* Linha 5 - Botões */}
+          <div className="flex gap-2 pt-1">
             <Button
               variant="outline"
               onClick={calculateValues}
-              className="flex items-center gap-2 h-9"
+              className="flex items-center gap-1 h-8 text-xs px-3"
             >
-              <RefreshCwIcon className="size-4" /> Recalcular
+              <RefreshCwIcon className="size-3" /> Recalcular
             </Button>
 
             <Button
               variant="outline"
               onClick={adjustmentModal.open}
-              className="flex items-center gap-2 h-9"
+              className="flex items-center gap-1 h-8 text-xs px-3"
             >
-              <SettingsIcon className="size-4" /> Ajustar
+              <SettingsIcon className="size-3" /> Ajustar
             </Button>
 
             <Button
               variant="outline"
               onClick={roundValues}
-              className="flex items-center gap-2 h-9"
+              className="flex items-center gap-1 h-8 text-xs px-3"
             >
-              <CircleIcon className="size-4" /> Arredondar
+              <CircleIcon className="size-3" /> Arredondar
             </Button>
 
             <Button
               onClick={handleAddToCart}
               disabled={!isFormValid()}
-              className="flex items-center gap-2 h-9 ml-auto"
+              className="flex items-center gap-1 h-8 text-xs px-3 ml-auto"
             >
-              <PlusIcon className="size-4" /> Adicionar
+              <PlusIcon className="size-3" /> Adicionar
             </Button>
           </div>
         </CardContent>

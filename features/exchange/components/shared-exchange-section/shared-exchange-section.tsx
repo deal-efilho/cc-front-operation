@@ -67,81 +67,86 @@ export function SharedExchangeSection({ commonData, onCommonDataChange }: Shared
 
   return (
     <div className="space-y-4">
-      {/* Card Principal - Área Compartilhada */}
+      {/* Card Principal - Forma Compacta */}
       <Card>
-        <CardContent className="p-6">
-          {/* Seção principal - Busca de Cliente (destaque) */}
-          <div className="space-y-4 mb-6">
-            <div className="flex gap-6 items-center">
-              <div className="flex items-center space-x-2">
-                <input
-                  type="radio"
-                  id="cpf"
-                  name="documentType"
-                  value="CPF"
-                  checked={selectedType === "CPF"}
-                  onChange={() => setSelectedType("CPF")}
-                  className="h-4 w-4"
-                />
-                <Label htmlFor="cpf" className="text-sm">CPF</Label>
-              </div>
-
-              <div className="flex items-center space-x-2">
-                <input
-                  type="radio"
-                  id="passaporte"
-                  name="documentType"
-                  value="PASSAPORTE"
-                  checked={selectedType === "PASSAPORTE"}
-                  onChange={() => setSelectedType("PASSAPORTE")}
-                  className="h-4 w-4"
-                />
-                <Label htmlFor="passaporte" className="text-sm">Passaporte/CNE/Identidade</Label>
-              </div>
-
-              <div className="flex items-center space-x-2">
-                <input
-                  type="radio"
-                  id="cnpj"
-                  name="documentType"
-                  value="CNPJ"
-                  checked={selectedType === "CNPJ"}
-                  onChange={() => setSelectedType("CNPJ")}
-                  className="h-4 w-4"
-                />
-                <Label htmlFor="cnpj" className="text-sm">CNPJ</Label>
-              </div>
+        <CardContent className="p-4">
+          {/* Primeira linha - Busca de cliente (destaque) */}
+          {/* Tipos de documento - inline */}
+          <div className="flex gap-2 items-center">
+            <div className="flex items-center space-x-1">
+              <input
+                type="radio"
+                id="cpf"
+                name="documentType"
+                value="CPF"
+                checked={selectedType === "CPF"}
+                onChange={() => setSelectedType("CPF")}
+                className="h-3 w-3"
+              />
+              <Label htmlFor="cpf" className="text-xs">CPF</Label>
             </div>
 
-            <div className="flex gap-3">
+            <div className="flex items-center space-x-1">
+              <input
+                type="radio"
+                id="passaporte"
+                name="documentType"
+                value="PASSAPORTE"
+                checked={selectedType === "PASSAPORTE"}
+                onChange={() => setSelectedType("PASSAPORTE")}
+                className="h-3 w-3"
+              />
+              <Label htmlFor="passaporte" className="text-xs">Passaporte/CNE</Label>
+            </div>
+
+            <div className="flex items-center space-x-1">
+              <input
+                type="radio"
+                id="cnpj"
+                name="documentType"
+                value="CNPJ"
+                checked={selectedType === "CNPJ"}
+                onChange={() => setSelectedType("CNPJ")}
+                className="h-3 w-3"
+              />
+              <Label htmlFor="cnpj" className="text-xs">CNPJ</Label>
+            </div>
+          </div>
+
+          {/* Campo de busca + configurações em linha */}
+          <div className="grid grid-cols-12 gap-2 items-end">
+            {/* Documento - 4 colunas */}
+            <div className="col-span-3">
               <Input
                 type="text"
                 value={documentValue}
                 onChange={handleDocumentChange}
                 placeholder={getPlaceholder()}
-                className="flex-1 h-10 text-base"
+                className="h-8 text-sm"
               />
+            </div>
+
+            {/* Botão pesquisar - 1 coluna */}
+            <div className="col-span-1">
               <Button
                 onClick={handleSearch}
                 disabled={!documentValue.trim()}
-                className="flex items-center gap-2 h-10 px-6"
+                className="h-8 w-full p-0"
+                size="sm"
               >
-                <SearchIcon className="size-4" />
-                Pesquisar
+                <SearchIcon className="size-3" />
               </Button>
             </div>
-          </div>
 
-          {/* Configurações secundárias em linha */}
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4 pt-4 border-t border-gray-200">
-            <div className="space-y-2">
-              <Label htmlFor="loja" className="text-sm text-gray-600">Loja *</Label>
+            {/* Loja - 2 colunas */}
+            <div className="col-span-3 space-y-1">
+              <Label className="text-xs text-gray-600">Loja</Label>
               <Select
                 value={commonData.loja}
                 onValueChange={(value) => onCommonDataChange('loja', value)}
               >
-                <SelectTrigger className="h-9">
-                  <SelectValue placeholder="Selecione a loja" />
+                <SelectTrigger className="h-8 text-xs">
+                  <SelectValue />
                 </SelectTrigger>
                 <SelectContent>
                   {LOJAS.map((loja) => (
@@ -153,14 +158,15 @@ export function SharedExchangeSection({ commonData, onCommonDataChange }: Shared
               </Select>
             </div>
 
-            <div className="space-y-2">
-              <Label htmlFor="canalAtendimento" className="text-sm text-gray-600">Canal *</Label>
+            {/* Canal - 2 colunas */}
+            <div className="col-span-2 space-y-1">
+              <Label className="text-xs text-gray-600">Canal</Label>
               <Select
                 value={commonData.canalAtendimento}
                 onValueChange={(value) => onCommonDataChange('canalAtendimento', value)}
               >
-                <SelectTrigger className="h-9">
-                  <SelectValue placeholder="Selecione o canal" />
+                <SelectTrigger className="h-8 text-xs">
+                  <SelectValue />
                 </SelectTrigger>
                 <SelectContent>
                   {CANAIS_ATENDIMENTO.map((canal) => (
@@ -172,13 +178,14 @@ export function SharedExchangeSection({ commonData, onCommonDataChange }: Shared
               </Select>
             </div>
 
-            <div className="space-y-2">
-              <Label htmlFor="naturezaOperacao" className="text-sm text-gray-600">Natureza *</Label>
+            {/* Natureza - 3 colunas */}
+            <div className="col-span-3 space-y-1">
+              <Label className="text-xs text-gray-600">Natureza</Label>
               <Select
                 value={commonData.naturezaOperacao}
                 onValueChange={(value) => onCommonDataChange('naturezaOperacao', value)}
               >
-                <SelectTrigger className="h-9">
+                <SelectTrigger className="h-8 text-xs">
                   <SelectValue />
                 </SelectTrigger>
                 <SelectContent>
