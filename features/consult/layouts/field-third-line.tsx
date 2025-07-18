@@ -2,54 +2,47 @@
 
 import { InputField } from "../components";
 
-import {
-  useBankIdStore,
-  useCertificateStore,
-  useCreatedAtFromStore,
-  useCreatedAtToStore,
-} from "../hooks";
+import { useFilterDataStateStore, type FieldFilter } from "../hooks";
 
 export const FieldThirdLine = () => {
-  const { bankIdValue, setBankIdValue } = useBankIdStore();
-  const { certificateValue, setCertificateValue } = useCertificateStore();
-  const { createdAtFromValue, setCreatedAtFromValue } = useCreatedAtFromStore();
-  const { createdAtToValue, setCreatedAtToValue } = useCreatedAtToStore();
+  const { filterData, setFilterData } = useFilterDataStateStore();
 
-  const handleBankIdChange = (value: string) => setBankIdValue(value);
-  const handleCertificateChange = (value: string) => setCertificateValue(value);
-  const handleCreatedAtFromChange = (value: string) =>
-    setCreatedAtFromValue(value);
-  const handleCreatedAtToChange = (value: string) => setCreatedAtToValue(value);
+  const handleFilterDataChange = (value: string, field: FieldFilter) =>
+    setFilterData({ field, value });
 
   const fields = [
     {
       id: "bankId",
       label: "Identificador banco",
       type: "number",
-      value: bankIdValue,
-      handleChange: handleBankIdChange,
+      value: filterData.bankIdValue,
+      handleChange: (value: string) =>
+        handleFilterDataChange(value, "bankIdValue"),
     },
     {
       id: "certificate",
       label: "Certificado Allianz",
-      value: certificateValue,
-      handleChange: handleCertificateChange,
+      value: filterData.certificateValue,
+      handleChange: (value: string) =>
+        handleFilterDataChange(value, "certificateValue"),
     },
     {
       id: "createdAtFrom",
       label: "Criação de:",
       type: "date",
-      value: createdAtFromValue,
-      handleChange: handleCreatedAtFromChange,
-      modifiWidth: 24,
+      value: filterData.createdAtFromValue,
+      handleChange: (value: string) =>
+        handleFilterDataChange(value, "createdAtFromValue"),
+      modifiWidth: "min-w-24",
     },
     {
       id: "createdAtTo",
       label: "a:",
       type: "date",
-      value: createdAtToValue,
-      handleChange: handleCreatedAtToChange,
-      modifiWidth: 24,
+      value: filterData.createdAtToValue,
+      handleChange: (value: string) =>
+        handleFilterDataChange(value, "createdAtToValue"),
+      modifiWidth: "min-w-24",
     },
   ];
 

@@ -58,7 +58,7 @@ export const FieldSecondLine = () => {
       options: manualContractOptions,
       value: manualContractValue,
       handleChange: handleManualContractChange,
-      modifiWidth: 24,
+      modifiWidth: 'min-w-24',
     },
   ];
 

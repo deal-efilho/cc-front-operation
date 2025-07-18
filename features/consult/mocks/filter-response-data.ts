@@ -1,8 +1,10 @@
+export type Status = "Aprovado" | "Pendente" | "Cancelado";
+
 export interface FilterResponseColumn {
   id: string;
   number: string;
   store: string;
-  status: string;
+  status: Status;
   created: string;
   validate: string;
   clientName: string;

@@ -16,7 +16,7 @@ export function ViewProposalModal() {
     <BaseModal
       isOpen={viewProposalModalIsOpen}
       onClose={handleClose}
-      title="Visualizar proposta"
+      title="Visualizar proposta - dados da proposta"
       size="md"
       showIcon={false}
     >
@@ -25,9 +25,12 @@ export function ViewProposalModal() {
           <div className="space-y-3"></div>
 
           <p>
-            Número da proposta: {proposal.number} <br />
-            Nome do cliente: {proposal.name} <br />
-            Documento do cliente: {proposal.doc}
+            <b>Número da proposta:</b> {proposal.number} <br />
+            <b> Nome do cliente: </b>
+            {proposal.name} <br />
+            <b>Documento do cliente:</b> {proposal.doc}
+            <br />
+            Todos os outros dados da proposta ...
           </p>
           <div className="flex gap-2 pt-2">
             <Button

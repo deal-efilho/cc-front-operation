@@ -1,36 +1,36 @@
 "use client";
 
+import { ListFilter } from "lucide-react";
+
 import { Button } from "@mfe/cc-front-shared";
 
 import { CheckboxField } from "../components";
-import { useOnlyMineStore, useOnlyWithBalanceStore } from "../hooks";
-import { ListFilter } from "lucide-react";
+import { useFilterDataStateStore, type FieldFilter } from "../hooks";
 
 interface FieldFourLineProps {
   onFilter: () => void;
 }
 
 export const FieldFourLine = ({ onFilter }: FieldFourLineProps) => {
-  const { onlyMineValue, setOnlyMineValue } = useOnlyMineStore();
-  const { onlyWithBalanceValue, setOnlyWithBalanceValue } =
-    useOnlyWithBalanceStore();
+  const { filterData, setFilterData } = useFilterDataStateStore();
 
-  const handleOnlyMineChange = (value: boolean) => setOnlyMineValue(value);
-  const handleOnlyWithBalanceChange = (value: boolean) =>
-    setOnlyWithBalanceValue(value);
+  const handleFilterDataChange = (value: boolean, field: FieldFilter) =>
+    setFilterData({ field, value });
 
   const fields = [
     {
       id: "onlyMine",
       label: "Somente minhas propostas",
-      value: onlyMineValue,
-      handleChange: handleOnlyMineChange,
+      value: filterData.onlyMineValue,
+      handleChange: (value: boolean) =>
+        handleFilterDataChange(value, "onlyMineValue"),
     },
     {
       id: "onlyWithBalance",
       label: "Somente com saldo para liquidar?",
-      value: onlyWithBalanceValue,
-      handleChange: handleOnlyWithBalanceChange,
+      value: filterData.onlyWithBalanceValue,
+      handleChange: (value: boolean) =>
+        handleFilterDataChange(value, "onlyWithBalanceValue"),
     },
   ];
 

@@ -29,7 +29,7 @@ export function CancelProposalModal() {
           <div className="space-y-3"></div>
 
           <p>
-            <b>Dados da prospota</b> <br />
+            <b>Você tem certeza que quer cancelar a proposta com os dados abaixo?</b> <br /><br />
             Número da proposta: {proposal.number} <br />
             Nome do cliente: {proposal.name} <br />
             Documento do cliente: {proposal.doc}

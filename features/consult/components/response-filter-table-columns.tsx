@@ -1,6 +1,6 @@
 import type { ColumnDef } from "@tanstack/react-table";
 
-import type { FilterResponseColumn } from "../mocks";
+import type { FilterResponseColumn, Status } from "../mocks";
 
 import { ActionTableComponent } from "./actions-table-components";
 
@@ -11,21 +11,38 @@ const formatCurrency = (value: number): string => {
   }).format(value);
 };
 
+const changeStatusColor = (status: Status): string => {
+  const colors = {
+    Aprovado: "text-green-600 font-medium",
+    Pendente: "text-yellow-600 font-medium",
+    Cancelado: "text-red-600 font-medium",
+  };
+  return colors[status];
+};
+
 export const responseFilterColumns: ColumnDef<FilterResponseColumn>[] = [
   {
     accessorKey: "number",
     header: "Número",
-    cell: ({ row }) => <span>{row.original.number}</span>,
+    cell: ({ row }) => (
+      <span className="flex w-max font-mono text-sm font-bold">
+        {row.original.number}
+      </span>
+    ),
   },
   {
     accessorKey: "store",
-    header: "Operação",
-    cell: ({ row }) => <span>{row.original.store}</span>,
+    header: "Loja",
+    cell: ({ row }) => <span className="flex w-max">{row.original.store}</span>,
   },
   {
     accessorKey: "status",
     header: "Status",
-    cell: ({ row }) => <span>{row.original.status}</span>,
+    cell: ({ row }) => (
+      <span className={changeStatusColor(row.original.status)}>
+        {row.original.status}
+      </span>
+    ),
   },
   {
     accessorKey: "created",
@@ -40,32 +57,57 @@ export const responseFilterColumns: ColumnDef<FilterResponseColumn>[] = [
   {
     accessorKey: "clientName",
     header: "Nome do cliente",
-    cell: ({ row }) => <span>{row.original.clientName}</span>,
+    cell: ({ row }) => (
+      <span className="flex w-max font-mono text-sm font-bold">
+        {row.original.clientName}
+      </span>
+    ),
   },
   {
     accessorKey: "clientDocument",
     header: "Documento do cliente",
-    cell: ({ row }) => <span>{row.original.clientDocument}</span>,
+    cell: ({ row }) => (
+      <span className="flex w-max font-mono text-sm font-bold">
+        {row.original.clientDocument}
+      </span>
+    ),
+  },
+  {
+    accessorKey: "balanceToSettle",
+    header: "Tem saldo para liquidar?",
+    cell: ({ row }) => (
+      <span className="flex w-[120px] justify-center font-mono text-sm font-bold uppercase">
+        {row.original.balanceToSettle}
+      </span>
+    ),
   },
   {
     accessorKey: "totalValue",
     header: "Valor total R$",
-    cell: ({ row }) => <span>{formatCurrency(row.original.totalValue)}</span>,
+    cell: ({ row }) => <span className="flex justify-center w-[120px]">{formatCurrency(row.original.totalValue)}</span>,
   },
   {
     accessorKey: "liquidValue",
     header: "Valor liquido R$",
-    cell: ({ row }) => <span>{formatCurrency(row.original.liquidValue)}</span>,
+    cell: ({ row }) => <span className="flex justify-center w-[120px]">{formatCurrency(row.original.liquidValue)}</span>,
   },
   {
     accessorKey: "manualContract",
     header: "Contrato manual",
-    cell: ({ row }) => <span>{row.original.manualContract}</span>,
+    cell: ({ row }) => (
+      <span className="flex justify-center uppercase">
+        {row.original.manualContract}
+      </span>
+    ),
   },
   {
     accessorKey: "corporate",
     header: "Corporate",
-    cell: ({ row }) => <span>{row.original.corporate}</span>,
+    cell: ({ row }) => (
+      <span className="flex justify-center uppercase">
+        {row.original.corporate}
+      </span>
+    ),
   },
   {
     id: "acoes",

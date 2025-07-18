@@ -1,16 +1,11 @@
 export * from "./use-document-search";
-export * from "./use-number";
-export * from "./use-client-name";
 export * from "./use-status";
 export * from "./use-store-tax";
 export * from "./use-store-create";
 export * from "./use-manual-contract";
-export * from "./use-bank-id";
-export * from "./use-certificate";
-export * from "./use-created-at-to";
-export * from "./use-created-at-from";
-export * from "./use-only-with-balance";
-export * from "./use-only-mine";
 export * from "./use-text-assistance";
 export * from "./use-cancel-proposal-modal";
 export * from "./use-view-proposal-modal";
+export * from "./use-filter-data";
+
+export type { FieldFilter } from "./use-filter-data";

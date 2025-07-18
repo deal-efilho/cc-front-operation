@@ -21,7 +21,7 @@ interface SelectFieldProps {
   label: string;
   options?: Options[];
   placeholder?: string;
-  modifiWidth?: number;
+  modifiWidth?: string;
 }
 
 export const SelectField = ({
@@ -31,22 +31,23 @@ export const SelectField = ({
   id,
   label,
   placeholder,
-  modifiWidth = 64,
+  modifiWidth = "min-w-64",
 }: SelectFieldProps) => (
   <div className={`space-y-2`}>
     <Label htmlFor={id} className="text-sm">
       {label}
     </Label>
     <Select value={value} onValueChange={handleChange}>
-      <SelectTrigger className={`h-8 min-w-${modifiWidth || 64}`}>
+      <SelectTrigger className={`h-8 ${modifiWidth}`}>
         <SelectValue placeholder={placeholder} />
       </SelectTrigger>
       <SelectContent>
-        {options && options.map((op) => (
-          <SelectItem key={op.value} value={op.value}>
-            {op.label}
-          </SelectItem>
-        ))}
+        {options &&
+          options.map((op) => (
+            <SelectItem key={op.value} value={op.value}>
+              {op.label}
+            </SelectItem>
+          ))}
       </SelectContent>
     </Select>
   </div>

@@ -2,35 +2,36 @@
 
 import { DocumentSearch, InputField } from "../components";
 import {
-  useClientNameStore,
-  useNumberStore,
+  useFilterDataStateStore,
   usetextAssistenceStore,
+  type FieldFilter,
 } from "../hooks";
 
 export const FieldFirstLine = () => {
-  const { numberValue, setNumberValue } = useNumberStore();
   const { setTextAssistenceValue } = usetextAssistenceStore();
-  const { clientNameValue, setClientNameValue } = useClientNameStore();
+  const { filterData, setFilterData } = useFilterDataStateStore();
 
-  const handleNumberChange = (value: string) => setNumberValue(value);
-  const handleClientNameChange = (value: string) => setClientNameValue(value);
+  const handleFilterDataChange = (value: string, field: FieldFilter) =>
+    setFilterData({ field, value });
 
   const fields = [
     {
       id: "number",
       label: "Número",
       type: "number",
-      value: numberValue,
+      value: filterData.numberValue,
       onFocus: () =>
         setTextAssistenceValue("Número de identificação da proposta"),
-      handleChange: handleNumberChange,
+      handleChange: (value: string) =>
+        handleFilterDataChange(value, "numberValue"),
     },
     {
       id: "clientName",
       label: "Nome do cliente",
-      value: clientNameValue,
+      value: filterData.clientNameValue,
       onFocus: () => setTextAssistenceValue("Nome do Cliente"),
-      handleChange: handleClientNameChange,
+      handleChange: (value: string) =>
+        handleFilterDataChange(value, "clientNameValue"),
     },
   ];
 

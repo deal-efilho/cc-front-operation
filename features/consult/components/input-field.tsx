@@ -9,7 +9,7 @@ interface InputFieldProps {
   id: string;
   onFocus?: () => void;
   type?: string;
-  modifiWidth?: number;
+  modifiWidth?: string;
 }
 
 export const InputField = ({
@@ -19,7 +19,7 @@ export const InputField = ({
   value,
   onFocus,
   type,
-  modifiWidth = 64,
+  modifiWidth = 'min-w-64',
 }: InputFieldProps) => (
   <div className="space-y-5" onFocus={onFocus && onFocus}>
     <div className="flex items-center space-x-2">
@@ -31,9 +31,7 @@ export const InputField = ({
         type={type || "text"}
         value={value}
         onChange={(e) => handleChange(e.target.value)}
-        className={`flex-1 [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none min-w-${
-          modifiWidth || 64
-        }`}
+        className={`flex-1 [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none ${modifiWidth}`}
       />
     </div>
   </div>
