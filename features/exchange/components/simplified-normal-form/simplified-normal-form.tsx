@@ -200,29 +200,27 @@ export function SimplifiedNormalForm({ commonData }: SimplifiedNormalFormProps) 
           {/* Linha 1 - Operação, Moeda e Taxa Admin */}
           <div className="grid grid-cols-12 gap-3 items-end">
             {/* Operação - 3 colunas */}
-            <div className="col-span-3 space-y-1">
+            <div className="col-span-2 space-y-2">
               <Label className="text-xs">Operação *</Label>
-              <div className="flex flex-col items-center gap-1">
-                <div className="inline-flex items-center gap-2" data-state={formData.operacao === 'VENDA' ? "checked" : "unchecked"}>
-                  <span
-                    className={`flex-1 cursor-pointer text-right text-xs font-medium ${formData.operacao === 'COMPRA' ? 'text-green-600' : 'text-muted-foreground/70'
-                      }`}
-                    onClick={() => handleInputChange('operacao', 'COMPRA')}
-                  >
-                    Compra
-                  </span>
-                  <SwitchTwo
-                    checked={formData.operacao === 'VENDA'}
-                    onCheckedChange={(checked) => handleInputChange('operacao', checked ? 'VENDA' : 'COMPRA')}
-                  />
-                  <span
-                    className={`flex-1 cursor-pointer text-left text-xs font-medium ${formData.operacao === 'VENDA' ? 'text-red-600' : 'text-muted-foreground/70'
-                      }`}
-                    onClick={() => handleInputChange('operacao', 'VENDA')}
-                  >
-                    Venda
-                  </span>
-                </div>
+              <div className="flex items-center gap-2">
+                <span
+                  className={`cursor-pointer text-xs font-medium ${formData.operacao === 'COMPRA' ? 'text-green-600' : 'text-muted-foreground/70'
+                    }`}
+                  onClick={() => handleInputChange('operacao', 'COMPRA')}
+                >
+                  Compra
+                </span>
+                <SwitchTwo
+                  checked={formData.operacao === 'VENDA'}
+                  onCheckedChange={(checked) => handleInputChange('operacao', checked ? 'VENDA' : 'COMPRA')}
+                />
+                <span
+                  className={`cursor-pointer text-xs font-medium ${formData.operacao === 'VENDA' ? 'text-red-600' : 'text-muted-foreground/70'
+                    }`}
+                  onClick={() => handleInputChange('operacao', 'VENDA')}
+                >
+                  Venda
+                </span>
               </div>
             </div>
 
@@ -257,25 +255,25 @@ export function SimplifiedNormalForm({ commonData }: SimplifiedNormalFormProps) 
 
             {/* Checkboxes - 2 colunas */}
             <div className="col-span-2 space-y-1">
-              <div className="space-y-1">
+              <div className="flex h-8 items-center gap-4">
                 <div className="flex items-center space-x-1">
                   <Checkbox
                     id="corporate"
                     checked={formData.corporate}
                     disabled={true}
                     onCheckedChange={(checked) => handleInputChange('corporate', checked)}
-                    className="h-3 w-3"
+                    className="h-4 w-4"
                   />
-                  <Label htmlFor="corporate" className="text-xs opacity-50">Corporate</Label>
+                  <Label htmlFor="corporate" className="text-sm opacity-50">Corporate</Label>
                 </div>
                 <div className="flex items-center space-x-1">
                   <Checkbox
                     id="retiradaHoje"
                     checked={formData.retiradaHoje}
                     onCheckedChange={(checked) => handleInputChange('retiradaHoje', checked)}
-                    className="h-3 w-3"
+                    className="h-4 w-4"
                   />
-                  <Label htmlFor="retiradaHoje" className="text-xs">Retirada D0</Label>
+                  <Label htmlFor="retiradaHoje" className="text-sm">Retirada D0</Label>
                 </div>
               </div>
             </div>
@@ -313,6 +311,16 @@ export function SimplifiedNormalForm({ commonData }: SimplifiedNormalFormProps) 
             </div>
 
             <div className="space-y-1">
+              <Label className="text-xs">Taxa Desejada</Label>
+              <Input
+                type="text"
+                value={formatDecimal(formData.taxaDesejada)}
+                readOnly
+                className="bg-gray-50 h-8 text-sm"
+              />
+            </div>
+
+            <div className="space-y-1">
               <Label className="text-xs">IOF</Label>
               <Input
                 type="text"
@@ -331,16 +339,6 @@ export function SimplifiedNormalForm({ commonData }: SimplifiedNormalFormProps) 
                 className="bg-gray-50 font-semibold h-8 text-sm"
               />
             </div>
-
-            <div className="space-y-1">
-              <Label className="text-xs">Valor Líquido</Label>
-              <Input
-                type="text"
-                value={formatCurrency(formData.valorLiquido)}
-                readOnly
-                className="bg-gray-50 font-semibold h-8 text-sm"
-              />
-            </div>
           </div>
 
           {/* Linha 3 - Campanha */}
@@ -352,7 +350,7 @@ export function SimplifiedNormalForm({ commonData }: SimplifiedNormalFormProps) 
                 value={formData.campanha}
                 onChange={(e) => handleInputChange('campanha', e.target.value)}
                 placeholder="Digite a campanha"
-                className="h-8 text-sm"
+                className="h-8 text-sm max-w-sm"
               />
             </div>
           </div>

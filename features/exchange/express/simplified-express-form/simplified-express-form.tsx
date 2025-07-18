@@ -28,9 +28,9 @@ interface CurrencyLineData {
 const TODAS_MOEDAS: CurrencyLineData[] = [
   {
     moeda: "USD_ESPECIE",
-    moedaLabel: "USD",
-    moedaNome: "Dólar Americano",
-    bandeira: "🇺🇸",
+    moedaLabel: "Dólar",
+    moedaNome: "Espécie",
+    bandeira: "/us_flag.png",
     taxaCompra: 5.08375,
     taxaVenda: 5.18420,
     quantidadeCompra: 0,
@@ -456,7 +456,11 @@ export function SimplifiedExpressForm({ commonData }: SimplifiedExpressFormProps
                       {/* Linha 1 - Header da Moeda com bandeira */}
                       <div className="flex items-center justify-between">
                         <div className="flex items-center gap-3">
-                          <span className="text-lg">{line.bandeira}</span>
+                          {line.bandeira.includes("png") ? (
+                            <img src={line.bandeira} className="h-6 w-6" />
+                          ) : (
+                            <span className="text-lg">{line.bandeira}</span>
+                          )}
                           <div>
                             <div className="text-sm font-bold text-gray-800">{line.moedaLabel}</div>
                             <div className="text-xs text-gray-500">{line.moedaNome}</div>
@@ -544,7 +548,7 @@ export function SimplifiedExpressForm({ commonData }: SimplifiedExpressFormProps
                             className="h-8 text-xs bg-green-100 text-center font-bold text-green-700"
                           />
                         </div>
-                        <div className="col-span-1 pb-1">
+                        <div className="col-span-1">
                           <Button
                             onClick={() => handleAddToCart(originalIndex, 'compra')}
                             disabled={line.quantidadeCompra <= 0}
@@ -602,7 +606,7 @@ export function SimplifiedExpressForm({ commonData }: SimplifiedExpressFormProps
                             className="h-8 text-xs bg-red-100 text-center font-bold text-red-700"
                           />
                         </div>
-                        <div className="col-span-1 pb-1">
+                        <div className="col-span-1">
                           <Button
                             onClick={() => handleAddToCart(originalIndex, 'venda')}
                             disabled={line.quantidadeVenda <= 0}

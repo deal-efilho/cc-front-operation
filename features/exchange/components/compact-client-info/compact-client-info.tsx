@@ -2,10 +2,11 @@
 "use client"
 
 import { Button, Card, CardContent, StarRating, Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@mfe/cc-front-shared"
-import { ClockIcon, Link2Icon, SquareArrowOutUpRightIcon, UserIcon } from "lucide-react"
+import { ClockIcon, Link2Icon, SquareArrowOutUpRightIcon, UserIcon, SearchIcon } from "lucide-react"
 import { useModal } from "@/hooks/use-modal"
 import { ClientDetailsModal } from "../client-details-modal/client-details-modal"
 import { HistoryModal } from "../history-modal/history-modal"
+import { ContactSelectionModal } from "../contact-selection-modal/contact-selection-modal"
 import { useUserDetailsStore } from "../../hooks/use-user-details"
 
 const SITUACOES_RECEITA = [
@@ -37,6 +38,7 @@ export function CompactClientInfo({
 }: CompactClientInfoProps) {
   const clientDetailsModal = useModal()
   const historyModal = useModal()
+  const contactSelectionModal = useModal()
   const { setUserDetails } = useUserDetailsStore()
 
   const formatCurrency = (value: number) => {
@@ -50,12 +52,17 @@ export function CompactClientInfo({
     setUserDetails({ situacaoReceita: value })
   }
 
+  const handleContactSearch = (type: string, value: string) => {
+    console.log('Pesquisando contato:', { type, value })
+    // Implementar lógica de pesquisa de contato
+  }
+
   return (
     <>
       <Card className="bg-blue-50 border-blue-200">
         <CardContent className="p-4">
           <div className="space-y-2">
-            {/* Linha 1 - Nome, Estrelas e Botão Histórico */}
+            {/* Linha 1 - Nome, Estrelas e Botões */}
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-2">
                 <UserIcon className="size-4 text-blue-600" />
@@ -68,15 +75,27 @@ export function CompactClientInfo({
                 <StarRating filledStars={classificacao} />
               </div>
 
-              <Button
-                variant="outline"
-                size="sm"
-                onClick={historyModal.open}
-                className="flex items-center gap-1 h-8 text-xs px-3"
-              >
-                <ClockIcon className="size-3" />
-                Histórico
-              </Button>
+              <div className="flex gap-2">
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={contactSelectionModal.open}
+                  className="flex items-center gap-1 h-8 text-xs px-3"
+                >
+                  <SearchIcon className="size-3" />
+                  Pesquisar
+                </Button>
+
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={historyModal.open}
+                  className="flex items-center gap-1 h-8 text-xs px-3"
+                >
+                  <ClockIcon className="size-3" />
+                  Histórico
+                </Button>
+              </div>
             </div>
 
             {/* Linha 2 - Dados de Atualização */}
@@ -112,10 +131,11 @@ export function CompactClientInfo({
                 <Button
                   variant="outline"
                   size="sm"
-                  className="h-7 text-xs px-3"
+                  className="h-7 text-xs px-3 flex items-center gap-1"
                   onClick={() => console.log('Validando situação...')}
                 >
                   <SquareArrowOutUpRightIcon className="size-4" />
+                  Validar
                 </Button>
               </div>
 
@@ -150,6 +170,12 @@ export function CompactClientInfo({
         isOpen={historyModal.isOpen}
         onClose={historyModal.close}
         clientName={nome}
+      />
+
+      <ContactSelectionModal
+        isOpen={contactSelectionModal.isOpen}
+        onClose={contactSelectionModal.close}
+        onSearch={handleContactSearch}
       />
     </>
   )
