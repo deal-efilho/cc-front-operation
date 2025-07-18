@@ -1,80 +1,178 @@
 "use client"
-import { useEffect } from "react";
-import { useExchangeFormStore } from "../../hooks/use-exchange-form";
-import { Button, Input, Label, RadioGroup, RadioGroupItem, Select, SelectContent, SelectItem, SelectTrigger, SelectValue, Checkbox, Card, CardContent } from "@mfe/cc-front-shared";
-import { RefreshCwIcon, SettingsIcon, PlusIcon, CircleIcon } from "lucide-react";
-import { CurrencyInput } from "@/components/ui/currency-input";
-import { useModal } from "@/hooks/use-modal";
-import { AdjustmentModal, type AdjustmentData } from "../adjustment-modal/adjustment-modal";
-import { useOperationsCartStore } from "../../hooks/use-operation-cart";
 
-const LOJAS = [
-  { value: "CPS_SH_DOM_PEDRO", label: "CPS SH DOM PEDRO" },
-  { value: "CPS_JUDIAI_SH", label: "CPS JUDIAI SH" }
-];
+import { useEffect } from "react"
+import { Button, Input, Label, RadioGroup, RadioGroupItem, Select, SelectContent, SelectItem, SelectTrigger, SelectValue, Checkbox, Card, CardContent } from "@mfe/cc-front-shared"
+import { RefreshCwIcon, SettingsIcon, PlusIcon, CircleIcon } from "lucide-react"
+import { CurrencyInput } from "@/components/ui/currency-input"
+import { useModal } from "@/hooks/use-modal"
+import { AdjustmentModal, type AdjustmentData } from "../adjustment-modal/adjustment-modal"
+import { useOperationsCartStore } from "../../hooks/use-operation-cart"
+import React from "react"
 
 const MOEDAS = [
   { value: "USD_ESPECIE", label: "Dólar Espécie" },
   { value: "EUR_ESPECIE", label: "Euro Espécie" }
-];
+]
 
-const CANAIS_ATENDIMENTO = [
-  { value: "APP", label: "APP" },
-  { value: "CHAT", label: "CHAT" },
-  { value: "EMAIL", label: "E-MAIL" },
-  { value: "PARCEIROS", label: "PARCEIROS" },
-  { value: "PRESENCIAL", label: "PRESENCIAL" },
-  { value: "REDES_SOCIAIS", label: "REDES SOCIAIS" },
-  { value: "TELEFONE", label: "TELEFONE" },
-  { value: "WHATSAPP", label: "WHATSAPP" }
-];
+interface SimplifiedFormData {
+  operacao: 'COMPRA' | 'VENDA'
+  moeda: string
+  taxaAdministrativa: number
+  corporate: boolean
+  retiradaHoje: boolean
+  quantidade: number
+  taxa: number
+  taxaEspecial: number
+  taxaDesejada: number
+  iof: number
+  valorTotal: number
+  valorLiquido: number
+  campanha: string
+}
 
-function ExchangeForm() {
-  const {
-    formData,
-    isVisible,
-    documento,
-    setFormData,
-    calculateValues,
-    adjustValues,
-    roundValues
-  } = useExchangeFormStore();
+interface SimplifiedNormalFormProps {
+  commonData: {
+    loja: string
+    canalAtendimento: string
+    naturezaOperacao: string
+  }
+}
 
-  const { addOperation } = useOperationsCartStore();
+export function SimplifiedNormalForm({ commonData }: SimplifiedNormalFormProps) {
+  const { addOperation } = useOperationsCartStore()
+  const adjustmentModal = useModal()
 
-  const adjustmentModal = useModal();
+  const [formData, setFormData] = React.useState<SimplifiedFormData>({
+    operacao: 'COMPRA',
+    moeda: '',
+    taxaAdministrativa: 12.90,
+    corporate: false,
+    retiradaHoje: false,
+    quantidade: 1.00,
+    taxa: 5.08375,
+    taxaEspecial: 5.08375,
+    taxaDesejada: 5.08375,
+    iof: 0.02,
+    valorTotal: 0,
+    valorLiquido: 0,
+    campanha: ''
+  })
 
-  useEffect(() => {
-    if (isVisible) {
-      calculateValues();
+  const calculateValues = () => {
+    const { quantidade, taxaAdministrativa } = formData
+    const taxaBase = 5.08375
+    const taxa = taxaBase * (1 + (quantidade - 1) * 0.001)
+    const taxaEspecial = taxa * 0.998
+    const taxaDesejada = taxa * 1.002
+    const iof = quantidade * taxa * 0.0038
+    const valorTotal = quantidade * taxa + iof + taxaAdministrativa
+    const valorLiquido = valorTotal - taxaAdministrativa - iof
+
+    setFormData(prev => ({
+      ...prev,
+      taxa: Number(taxa.toFixed(5)),
+      taxaEspecial: Number(taxaEspecial.toFixed(5)),
+      taxaDesejada: Number(taxaDesejada.toFixed(5)),
+      iof: Number(iof.toFixed(2)),
+      valorTotal: Number(valorTotal.toFixed(2)),
+      valorLiquido: Number(valorLiquido.toFixed(2))
+    }))
+  }
+
+  const adjustValues = (adjustmentData: AdjustmentData) => {
+    const { taxaAdministrativa } = formData
+    let { liquidValue } = adjustmentData
+
+    if (adjustmentData.options.cedulas200_500_1000) {
+      liquidValue = liquidValue * 0.88
     }
-  }, [isVisible, calculateValues]);
+
+    if (adjustmentData.adjustBy === 'taxa') {
+      const quantidade = formData.quantidade
+      const iof = liquidValue * 0.0038
+      const valorTotal = liquidValue + taxaAdministrativa + iof
+      const taxa = (valorTotal - taxaAdministrativa - iof) / quantidade
+
+      setFormData(prev => ({
+        ...prev,
+        taxa: Number(taxa.toFixed(5)),
+        taxaEspecial: Number((taxa * 0.998).toFixed(5)),
+        taxaDesejada: Number((taxa * 1.002).toFixed(5)),
+        iof: Number(iof.toFixed(2)),
+        valorTotal: Number(valorTotal.toFixed(2)),
+        valorLiquido: Number(liquidValue.toFixed(2))
+      }))
+    } else {
+      const taxa = formData.taxa
+      const quantidade = liquidValue / taxa
+      const iof = quantidade * taxa * 0.0038
+      const valorTotal = quantidade * taxa + iof + taxaAdministrativa
+
+      setFormData(prev => ({
+        ...prev,
+        quantidade: Number(quantidade.toFixed(2)),
+        iof: Number(iof.toFixed(2)),
+        valorTotal: Number(valorTotal.toFixed(2)),
+        valorLiquido: Number(liquidValue.toFixed(2))
+      }))
+    }
+  }
+
+  const roundValues = () => {
+    const { taxaAdministrativa } = formData
+    const valorTotalRounded = Math.ceil(formData.valorTotal)
+    const valorLiquido = valorTotalRounded - taxaAdministrativa - formData.iof
+    const taxa = (valorTotalRounded - taxaAdministrativa - formData.iof) / formData.quantidade
+
+    setFormData(prev => ({
+      ...prev,
+      taxa: Number(taxa.toFixed(5)),
+      taxaEspecial: Number((taxa * 0.998).toFixed(5)),
+      taxaDesejada: Number((taxa * 1.002).toFixed(5)),
+      valorTotal: valorTotalRounded,
+      valorLiquido: Number(valorLiquido.toFixed(2))
+    }))
+  }
 
   const handleInputChange = (field: string, value: any) => {
-    setFormData({ [field]: value });
-  };
-
-  const handleAdjustmentConfirm = (adjustmentData: AdjustmentData) => {
-    adjustValues(adjustmentData);
-  };
-
-  const handleRound = () => {
-    roundValues();
-  };
+    setFormData(prev => ({ ...prev, [field]: value }))
+    if (field === 'quantidade') {
+      calculateValues()
+    }
+  }
 
   const handleAddToCart = () => {
-    addOperation(formData);
-  };
+    const operationData = {
+      loja: commonData.loja,
+      operacao: formData.operacao,
+      moeda: formData.moeda,
+      taxaAdministrativa: formData.taxaAdministrativa,
+      canalAtendimento: commonData.canalAtendimento,
+      corporate: formData.corporate,
+      retiradaHoje: formData.retiradaHoje,
+      quantidade: formData.quantidade,
+      taxa: formData.taxa,
+      taxaEspecial: formData.taxaEspecial,
+      taxaDesejada: formData.taxaDesejada,
+      iof: formData.iof,
+      valorTotal: formData.valorTotal,
+      valorLiquido: formData.valorLiquido,
+      campanha: formData.campanha,
+      naturezaOperacao: commonData.naturezaOperacao
+    }
+
+    addOperation(operationData)
+  }
 
   const isFormValid = () => {
     return !!(
-      formData.loja &&
+      commonData.loja &&
       formData.operacao &&
       formData.moeda &&
-      formData.canalAtendimento &&
+      commonData.canalAtendimento &&
       formData.quantidade > 0
-    );
-  };
+    )
+  }
 
   const formatCurrency = (value: number, decimals: number = 2) => {
     return new Intl.NumberFormat('pt-BR', {
@@ -82,43 +180,29 @@ function ExchangeForm() {
       currency: 'BRL',
       minimumFractionDigits: decimals,
       maximumFractionDigits: decimals
-    }).format(value);
-  };
+    }).format(value)
+  }
 
   const formatDecimal = (value: number, decimals: number = 5) => {
-    return value.toFixed(decimals).replace(".", ",");
-  };
+    return value.toFixed(decimals).replace(".", ",")
+  }
 
-  if (!isVisible) return null;
+  useEffect(() => {
+    calculateValues()
+  }, [])
 
   return (
     <>
       <Card className="w-full">
         <CardContent className="space-y-4 mt-2">
-          {/* Dados da Operação */}
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-3">
-            <div className="space-y-1">
-              <Label htmlFor="loja" className="text-sm">Loja *</Label>
-              <Select value={formData.loja} onValueChange={(value) => handleInputChange('loja', value)}>
-                <SelectTrigger className="h-9">
-                  <SelectValue placeholder="Selecione a loja" />
-                </SelectTrigger>
-                <SelectContent>
-                  {LOJAS.map((loja) => (
-                    <SelectItem key={loja.value} value={loja.value}>
-                      {loja.label}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-            </div>
-
-            <div className="space-y-1">
+          {/* Operação e Moeda */}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div className="space-y-2">
               <Label className="text-sm">Operação *</Label>
               <RadioGroup
                 value={formData.operacao}
                 onValueChange={(value) => handleInputChange('operacao', value)}
-                className="flex gap-4 pt-2"
+                className="flex gap-4"
               >
                 <div className="flex items-center space-x-2">
                   <RadioGroupItem value="COMPRA" id="compra" />
@@ -131,7 +215,7 @@ function ExchangeForm() {
               </RadioGroup>
             </div>
 
-            <div className="space-y-1">
+            <div className="space-y-2">
               <Label htmlFor="moeda" className="text-sm">Moeda *</Label>
               <Select value={formData.moeda} onValueChange={(value) => handleInputChange('moeda', value)}>
                 <SelectTrigger className="h-9">
@@ -146,27 +230,11 @@ function ExchangeForm() {
                 </SelectContent>
               </Select>
             </div>
-
-            <div className="space-y-1">
-              <Label htmlFor="canalAtendimento" className="text-sm">Canal de Atendimento *</Label>
-              <Select value={formData.canalAtendimento} onValueChange={(value) => handleInputChange('canalAtendimento', value)}>
-                <SelectTrigger className="h-9">
-                  <SelectValue placeholder="Selecione o canal" />
-                </SelectTrigger>
-                <SelectContent>
-                  {CANAIS_ATENDIMENTO.map((canal) => (
-                    <SelectItem key={canal.value} value={canal.value}>
-                      {canal.label}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-            </div>
           </div>
 
           {/* Configurações */}
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-3">
-            <div className="space-y-1">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <div className="space-y-2">
               <Label htmlFor="taxaAdministrativa" className="text-sm">Taxa Administrativa *</Label>
               <Input
                 id="taxaAdministrativa"
@@ -174,21 +242,8 @@ function ExchangeForm() {
                 step="0.01"
                 value={formData.taxaAdministrativa}
                 onChange={(e) => handleInputChange('taxaAdministrativa', parseFloat(e.target.value) || 0)}
-                placeholder="12,90"
                 className="h-9"
               />
-            </div>
-
-            <div className="space-y-1">
-              <Label htmlFor="naturezaOperacao" className="text-sm">Natureza da Operação *</Label>
-              <Select value={formData.naturezaOperacao} onValueChange={(value) => handleInputChange('naturezaOperacao', value)}>
-                <SelectTrigger className="h-9">
-                  <SelectValue />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="32999 - Viagem Internacional">32999 - Viagem Internacional</SelectItem>
-                </SelectContent>
-              </Select>
             </div>
 
             <div className="flex items-center space-x-2 pt-6">
@@ -212,8 +267,8 @@ function ExchangeForm() {
           </div>
 
           {/* Valores */}
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
-            <div className="space-y-1">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <div className="space-y-2">
               <Label htmlFor="quantidade" className="text-sm">Quantidade *</Label>
               <CurrencyInput
                 id="quantidade"
@@ -223,7 +278,7 @@ function ExchangeForm() {
               />
             </div>
 
-            <div className="space-y-1">
+            <div className="space-y-2">
               <Label htmlFor="taxa" className="text-sm">Taxa</Label>
               <Input
                 id="taxa"
@@ -234,40 +289,7 @@ function ExchangeForm() {
               />
             </div>
 
-            <div className="space-y-1">
-              <Label htmlFor="taxaEspecial" className="text-sm">Taxa Especial</Label>
-              <Input
-                id="taxaEspecial"
-                type="text"
-                value={formatDecimal(formData.taxaEspecial)}
-                readOnly
-                className="bg-gray-50 h-9"
-              />
-            </div>
-
-            <div className="space-y-1">
-              <Label htmlFor="taxaDesejada" className="text-sm">Taxa Desejada</Label>
-              <Input
-                id="taxaDesejada"
-                type="text"
-                value={formatDecimal(formData.taxaDesejada)}
-                readOnly
-                className="bg-gray-50 h-9"
-              />
-            </div>
-
-            <div className="space-y-1">
-              <Label htmlFor="iof" className="text-sm">IOF</Label>
-              <Input
-                id="iof"
-                type="text"
-                value={formatCurrency(formData.iof)}
-                readOnly
-                className="bg-gray-50 h-9"
-              />
-            </div>
-
-            <div className="space-y-1">
+            <div className="space-y-2">
               <Label htmlFor="valorTotal" className="text-sm">Valor Total</Label>
               <Input
                 id="valorTotal"
@@ -278,7 +300,29 @@ function ExchangeForm() {
               />
             </div>
 
-            <div className="space-y-1">
+            <div className="space-y-2">
+              <Label htmlFor="taxaEspecial" className="text-sm">Taxa Especial</Label>
+              <Input
+                id="taxaEspecial"
+                type="text"
+                value={formatDecimal(formData.taxaEspecial)}
+                readOnly
+                className="bg-gray-50 h-9"
+              />
+            </div>
+
+            <div className="space-y-2">
+              <Label htmlFor="iof" className="text-sm">IOF</Label>
+              <Input
+                id="iof"
+                type="text"
+                value={formatCurrency(formData.iof)}
+                readOnly
+                className="bg-gray-50 h-9"
+              />
+            </div>
+
+            <div className="space-y-2">
               <Label htmlFor="valorLiquido" className="text-sm">Valor Líquido</Label>
               <Input
                 id="valorLiquido"
@@ -291,8 +335,8 @@ function ExchangeForm() {
           </div>
 
           {/* Campanha */}
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-            <div className="space-y-1">
+          <div className="grid grid-cols-1 gap-4">
+            <div className="space-y-2">
               <Label htmlFor="campanha" className="text-sm">Campanha</Label>
               <Input
                 id="campanha"
@@ -306,7 +350,7 @@ function ExchangeForm() {
           </div>
 
           {/* Resumo */}
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-3 pt-3 border-t">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 pt-3 border-t">
             <div className="space-y-1">
               <Label className="text-sm font-medium text-orange-600">Spread da Operação</Label>
               <div className="text-xl font-bold text-orange-600">6,00 %</div>
@@ -337,7 +381,7 @@ function ExchangeForm() {
 
             <Button
               variant="outline"
-              onClick={handleRound}
+              onClick={roundValues}
               className="flex items-center gap-2 h-9"
             >
               <CircleIcon className="size-4" /> Arredondar
@@ -357,11 +401,9 @@ function ExchangeForm() {
       <AdjustmentModal
         isOpen={adjustmentModal.isOpen}
         onClose={adjustmentModal.close}
-        onConfirm={handleAdjustmentConfirm}
+        onConfirm={adjustValues}
         initialValue={formData.valorLiquido}
       />
     </>
-  );
+  )
 }
-
-export { ExchangeForm };

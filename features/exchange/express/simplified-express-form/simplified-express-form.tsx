@@ -2,16 +2,8 @@
 
 import { useState } from "react"
 import { Button, Input, Label, Select, SelectContent, SelectItem, SelectTrigger, SelectValue, Card, CardContent } from "@mfe/cc-front-shared"
-import { SearchIcon, PlusIcon } from "lucide-react"
-import { useDocumentStore, applyCPFMask, applyCNPJMask } from "@/features/exchange/hooks/use-document-search"
-import { useOperationsCartStore } from "@/features/exchange/hooks/use-operation-cart"
-import { useUserDetailsStore } from "@/features/exchange/hooks/use-user-details"
-import { ExpressClientInfo } from "../express-client-info/express-client-info"
-
-const LOJAS = [
-  { value: "CPS_SH_DOM_PEDRO", label: "CPS SH DOM PEDRO" },
-  { value: "CPS_JUDIAI_SH", label: "CPS JUDIAI SH" }
-]
+import { PlusIcon } from "lucide-react"
+import { useOperationsCartStore } from "../../hooks/use-operation-cart"
 
 const MOEDAS = [
   { value: "USD_ESPECIE", label: "USD" },
@@ -20,17 +12,15 @@ const MOEDAS = [
   { value: "CAD_ESPECIE", label: "CAD" }
 ]
 
-const CANAIS_ATENDIMENTO = [
-  { value: "PRESENCIAL", label: "Presencial" },
-  { value: "WHATSAPP", label: "WhatsApp" },
-  { value: "TELEFONE", label: "Telefone" },
-  { value: "APP", label: "App" }
-]
+interface SimplifiedExpressFormProps {
+  commonData: {
+    loja: string
+    canalAtendimento: string
+    naturezaOperacao: string
+  }
+}
 
 interface ExpressFormData {
-  loja: string
-  canalAtendimento: string
-  naturezaOperacao: string
   operacao: 'COMPRA' | 'VENDA'
   moeda: string
   valorBRL: number
@@ -40,15 +30,10 @@ interface ExpressFormData {
   valorTotal: number
 }
 
-export function ExpressForm() {
-  const { selectedType, documentValue, setSelectedType, setDocumentValue } = useDocumentStore()
-  const { userDetails, isVisible: clientVisible, showUserDetails } = useUserDetailsStore()
+export function SimplifiedExpressForm({ commonData }: SimplifiedExpressFormProps) {
   const { addOperation } = useOperationsCartStore()
 
   const [formData, setFormData] = useState<ExpressFormData>({
-    loja: "CPS_SH_DOM_PEDRO",
-    canalAtendimento: "",
-    naturezaOperacao: "32999 - Viagem Internacional",
     operacao: 'COMPRA',
     moeda: "USD_ESPECIE",
     valorBRL: 0,
@@ -57,25 +42,6 @@ export function ExpressForm() {
     iof: 0,
     valorTotal: 0
   })
-
-  const handleDocumentChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const value = e.target.value
-    let maskedValue = value
-
-    if (selectedType === "CPF") {
-      maskedValue = applyCPFMask(value)
-    } else if (selectedType === "CNPJ") {
-      maskedValue = applyCNPJMask(value)
-    }
-
-    setDocumentValue(maskedValue)
-  }
-
-  const handleSearch = () => {
-    if (documentValue.trim()) {
-      showUserDetails()
-    }
-  }
 
   const handleOperationToggle = (operation: 'COMPRA' | 'VENDA') => {
     setFormData(prev => ({ ...prev, operacao: operation }))
@@ -102,11 +68,11 @@ export function ExpressForm() {
 
     // Converter para o formato do carrinho
     const operationData = {
-      loja: formData.loja,
+      loja: commonData.loja,
       operacao: formData.operacao,
       moeda: formData.moeda,
       taxaAdministrativa: 12.90,
-      canalAtendimento: formData.canalAtendimento,
+      canalAtendimento: commonData.canalAtendimento,
       corporate: false,
       retiradaHoje: false,
       quantidade: formData.quantidade,
@@ -117,7 +83,7 @@ export function ExpressForm() {
       valorTotal: formData.valorTotal,
       valorLiquido: formData.valorBRL,
       campanha: "",
-      naturezaOperacao: formData.naturezaOperacao
+      naturezaOperacao: commonData.naturezaOperacao
     }
 
     addOperation(operationData)
@@ -134,10 +100,8 @@ export function ExpressForm() {
 
   const isFormValid = () => {
     return !!(
-      documentValue.trim() &&
-      clientVisible &&
-      formData.loja &&
-      formData.canalAtendimento &&
+      commonData.loja &&
+      commonData.canalAtendimento &&
       formData.moeda &&
       formData.valorBRL > 0
     )
@@ -160,89 +124,18 @@ export function ExpressForm() {
   return (
     <Card className="w-full">
       <CardContent className="p-4 space-y-4">
-        {/* Configurações Rápidas */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-3 pb-3 border-b">
-          <div className="space-y-1">
-            <Label htmlFor="loja" className="text-xs text-gray-600">Loja</Label>
-            <Select value={formData.loja} onValueChange={(value) => setFormData(prev => ({ ...prev, loja: value }))}>
-              <SelectTrigger className="h-8 text-sm">
-                <SelectValue />
-              </SelectTrigger>
-              <SelectContent>
-                {LOJAS.map((loja) => (
-                  <SelectItem key={loja.value} value={loja.value}>
-                    {loja.label}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-          </div>
-
-          <div className="space-y-1">
-            <Label htmlFor="canal" className="text-xs text-gray-600">Canal *</Label>
-            <Select value={formData.canalAtendimento} onValueChange={(value) => setFormData(prev => ({ ...prev, canalAtendimento: value }))}>
-              <SelectTrigger className="h-8 text-sm">
-                <SelectValue placeholder="Selecione" />
-              </SelectTrigger>
-              <SelectContent>
-                {CANAIS_ATENDIMENTO.map((canal) => (
-                  <SelectItem key={canal.value} value={canal.value}>
-                    {canal.label}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-          </div>
-
-          <div className="space-y-1">
-            <Label htmlFor="natureza" className="text-xs text-gray-600">Natureza</Label>
-            <Select value={formData.naturezaOperacao} onValueChange={(value) => setFormData(prev => ({ ...prev, naturezaOperacao: value }))}>
-              <SelectTrigger className="h-8 text-sm">
-                <SelectValue />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="32999 - Viagem Internacional">32999 - Viagem Internacional</SelectItem>
-              </SelectContent>
-            </Select>
-          </div>
-        </div>
-
-        {/* Formulário Principal */}
+        {/* Formulário Express em linha única */}
         <div className="grid grid-cols-12 gap-2 items-end">
-          {/* CPF/Documento */}
-          <div className="col-span-2 space-y-1">
-            <Label className="text-xs text-gray-600">CPF/Doc *</Label>
-            <Input
-              type="text"
-              value={documentValue}
-              onChange={handleDocumentChange}
-              placeholder="000.000.000-00"
-              className="h-9 text-sm"
-            />
-          </div>
-
-          {/* Botão Pesquisar */}
-          <div className="col-span-1">
-            <Button
-              onClick={handleSearch}
-              disabled={!documentValue.trim()}
-              className="h-9 w-full p-0"
-              size="sm"
-            >
-              <SearchIcon className="size-4" />
-            </Button>
-          </div>
-
           {/* Toggle Compra/Venda */}
-          <div className="col-span-2 space-y-1">
+          <div className="col-span-2 space-y-2">
             <Label className="text-xs text-gray-600">Operação *</Label>
             <div className="flex bg-gray-100 rounded-md p-1 h-9">
               <button
                 type="button"
                 onClick={() => handleOperationToggle('COMPRA')}
                 className={`flex-1 text-xs rounded px-2 py-1 transition-colors ${formData.operacao === 'COMPRA'
-                  ? 'bg-green-500 text-white'
-                  : 'text-gray-600 hover:bg-gray-200'
+                    ? 'bg-green-500 text-white'
+                    : 'text-gray-600 hover:bg-gray-200'
                   }`}
               >
                 Compra
@@ -251,8 +144,8 @@ export function ExpressForm() {
                 type="button"
                 onClick={() => handleOperationToggle('VENDA')}
                 className={`flex-1 text-xs rounded px-2 py-1 transition-colors ${formData.operacao === 'VENDA'
-                  ? 'bg-red-500 text-white'
-                  : 'text-gray-600 hover:bg-gray-200'
+                    ? 'bg-red-500 text-white'
+                    : 'text-gray-600 hover:bg-gray-200'
                   }`}
               >
                 Venda
@@ -261,7 +154,7 @@ export function ExpressForm() {
           </div>
 
           {/* Moeda */}
-          <div className="col-span-1 space-y-1">
+          <div className="col-span-2 space-y-2">
             <Label className="text-xs text-gray-600">Moeda *</Label>
             <Select value={formData.moeda} onValueChange={(value) => setFormData(prev => ({ ...prev, moeda: value }))}>
               <SelectTrigger className="h-9 text-sm">
@@ -278,7 +171,7 @@ export function ExpressForm() {
           </div>
 
           {/* Valor BRL */}
-          <div className="col-span-2 space-y-1">
+          <div className="col-span-3 space-y-2">
             <Label className="text-xs text-gray-600">Valor R$ *</Label>
             <Input
               type="number"
@@ -291,7 +184,7 @@ export function ExpressForm() {
           </div>
 
           {/* Resultado */}
-          <div className="col-span-3 space-y-1">
+          <div className="col-span-4 space-y-2">
             <Label className="text-xs text-gray-600">Resultado</Label>
             <div className="h-9 flex items-center text-sm bg-gray-50 rounded-md px-3">
               {formData.valorBRL > 0 ? (
@@ -316,16 +209,6 @@ export function ExpressForm() {
             </Button>
           </div>
         </div>
-
-        {/* Informações do Cliente */}
-        {clientVisible && (
-          <ExpressClientInfo
-            nome={userDetails.nome}
-            classificacao={userDetails.classificacao}
-            valorDisponivelCompra={userDetails.valorDisponivelCompra}
-            valorDisponivelVenda={userDetails.valorDisponivelVenda}
-          />
-        )}
 
         {/* Detalhes do Cálculo */}
         {formData.valorBRL > 0 && (

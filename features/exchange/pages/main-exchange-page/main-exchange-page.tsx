@@ -1,13 +1,21 @@
 "use client"
 
+import { useState } from "react"
 import { Heading } from "@mfe/cc-front-shared"
-import { DocumentSearch } from "../../components/document-search/document-search"
-import { ExchangeForm } from "../../components/eschange-form/exchange-form"
+import { ExchangeTabs } from "../../components/exchange-tabs/exchange-tabs"
+import { SharedExchangeSection } from "../../components/shared-exchange-section/shared-exchange-section"
+import { SimplifiedNormalForm } from "../../components/simplified-normal-form/simplified-normal-form"
 import { OperationsCart } from "../../components/operation-cart/operation-cart"
-import { UserDetailsSection } from "../../components/user-details-section/user-details-section"
 import { useOperationsCartStore } from "../../hooks/use-operation-cart"
+import { SimplifiedExpressForm } from "../../express/simplified-express-form/simplified-express-form"
 
-export function NormalExchangeContent() {
+export function MainExchangePage() {
+  const [commonData, setCommonData] = useState({
+    loja: "CPS_SH_DOM_PEDRO",
+    canalAtendimento: "",
+    naturezaOperacao: "32999 - Viagem Internacional"
+  })
+
   const {
     operations,
     copyOperation,
@@ -16,6 +24,10 @@ export function NormalExchangeContent() {
     getTotalType,
     getAbsoluteTotalValue
   } = useOperationsCartStore()
+
+  const handleCommonDataChange = (field: string, value: string) => {
+    setCommonData(prev => ({ ...prev, [field]: value }))
+  }
 
   const handleSave = () => {
     console.log('Salvando propostas...', operations)
@@ -38,15 +50,22 @@ export function NormalExchangeContent() {
   }
 
   return (
-    <div className="flex flex-col gap-4">
+    <div className="flex flex-col gap-6">
       <Heading title="Negociar Câmbio" />
 
-      <DocumentSearch />
+      {/* Área Compartilhada - FORA das tabs */}
+      <SharedExchangeSection
+        commonData={commonData}
+        onCommonDataChange={handleCommonDataChange}
+      />
 
-      <UserDetailsSection />
+      {/* Tabs - Apenas para as partes específicas de negociação */}
+      <ExchangeTabs
+        normalContent={<SimplifiedNormalForm commonData={commonData} />}
+        expressContent={<SimplifiedExpressForm commonData={commonData} />}
+      />
 
-      <ExchangeForm />
-
+      {/* Carrinho de Operações */}
       {operations.length > 0 && (
         <OperationsCart
           operations={operations}
