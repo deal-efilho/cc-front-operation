@@ -1,147 +1,171 @@
 // features/exchange/components/simplified-normal-form/simplified-normal-form.tsx
-"use client"
+"use client";
 
-import { useEffect } from "react"
-import { Button, Input, Label, Select, SelectContent, SelectItem, SelectTrigger, SelectValue, Checkbox, Card, CardContent } from "@mfe/cc-front-shared"
-import { RefreshCwIcon, SettingsIcon, PlusIcon, CircleIcon } from "lucide-react"
-import { CurrencyInput } from "@/components/ui/currency-input"
-import { SwitchTwo } from "@/components/ui/switch-two"
-import { useModal } from "@/hooks/use-modal"
-import { AdjustmentModal, type AdjustmentData } from "../adjustment-modal/adjustment-modal"
-import { useOperationsCartStore } from "../../hooks/use-operation-cart"
-import React from "react"
+import { useEffect } from "react";
+import {
+  Button,
+  Input,
+  Label,
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+  Card,
+  CardContent,
+} from "@mfe/cc-front-shared";
+import {
+  RefreshCwIcon,
+  SettingsIcon,
+  PlusIcon,
+  CircleIcon,
+} from "lucide-react";
+import { CurrencyInput } from "@/components/ui/currency-input";
+import { SwitchTwo } from "@/components/ui/switch-two";
+import { useModal } from "@/hooks/use-modal";
+import {
+  AdjustmentModal,
+  type AdjustmentData,
+} from "../adjustment-modal/adjustment-modal";
+import { useOperationsCartStore } from "../../hooks/use-operation-cart";
+import { CheckboxField } from "@/components/ui/checkbox-field";
+import React from "react";
 
 const MOEDAS = [
   { value: "USD_ESPECIE", label: "Dólar Espécie" },
-  { value: "EUR_ESPECIE", label: "Euro Espécie" }
-]
+  { value: "EUR_ESPECIE", label: "Euro Espécie" },
+];
 
 interface SimplifiedFormData {
-  operacao: 'COMPRA' | 'VENDA'
-  moeda: string
-  taxaAdministrativa: number
-  corporate: boolean
-  retiradaHoje: boolean
-  quantidade: number
-  taxa: number
-  taxaEspecial: number
-  taxaDesejada: number
-  iof: number
-  valorTotal: number
-  valorLiquido: number
-  campanha: string
+  operacao: "COMPRA" | "VENDA";
+  moeda: string;
+  taxaAdministrativa: number;
+  corporate: boolean;
+  retiradaHoje: boolean;
+  quantidade: number;
+  taxa: number;
+  taxaEspecial: number;
+  taxaDesejada: number;
+  iof: number;
+  valorTotal: number;
+  valorLiquido: number;
+  campanha: string;
 }
 
 interface SimplifiedNormalFormProps {
   commonData: {
-    loja: string
-    canalAtendimento: string
-    naturezaOperacao: string
-  }
+    loja: string;
+    canalAtendimento: string;
+    naturezaOperacao: string;
+  };
 }
 
-export function SimplifiedNormalForm({ commonData }: SimplifiedNormalFormProps) {
-  const { addOperation } = useOperationsCartStore()
-  const adjustmentModal = useModal()
+export function SimplifiedNormalForm({
+  commonData,
+}: SimplifiedNormalFormProps) {
+  const { addOperation } = useOperationsCartStore();
+  const adjustmentModal = useModal();
 
   const [formData, setFormData] = React.useState<SimplifiedFormData>({
-    operacao: 'COMPRA',
-    moeda: '',
-    taxaAdministrativa: 12.90,
+    operacao: "COMPRA",
+    moeda: "",
+    taxaAdministrativa: 12.9,
     corporate: false,
     retiradaHoje: false,
-    quantidade: 1.00,
+    quantidade: 1.0,
     taxa: 5.08375,
     taxaEspecial: 5.08375,
     taxaDesejada: 5.08375,
     iof: 0.02,
     valorTotal: 0,
     valorLiquido: 0,
-    campanha: ''
-  })
+    campanha: "",
+  });
 
   const calculateValues = () => {
-    const { quantidade, taxaAdministrativa } = formData
-    const taxaBase = 5.08375
-    const taxa = taxaBase * (1 + (quantidade - 1) * 0.001)
-    const taxaEspecial = taxa * 0.998
-    const taxaDesejada = taxa * 1.002
-    const iof = quantidade * taxa * 0.0038
-    const valorTotal = quantidade * taxa + iof + taxaAdministrativa
-    const valorLiquido = valorTotal - taxaAdministrativa - iof
+    const { quantidade, taxaAdministrativa } = formData;
+    const taxaBase = 5.08375;
+    const taxa = taxaBase * (1 + (quantidade - 1) * 0.001);
+    const taxaEspecial = taxa * 0.998;
+    const taxaDesejada = taxa * 1.002;
+    const iof = quantidade * taxa * 0.0038;
+    const valorTotal = quantidade * taxa + iof + taxaAdministrativa;
+    const valorLiquido = valorTotal - taxaAdministrativa - iof;
 
-    setFormData(prev => ({
+    setFormData((prev) => ({
       ...prev,
       taxa: Number(taxa.toFixed(5)),
       taxaEspecial: Number(taxaEspecial.toFixed(5)),
       taxaDesejada: Number(taxaDesejada.toFixed(5)),
       iof: Number(iof.toFixed(2)),
       valorTotal: Number(valorTotal.toFixed(2)),
-      valorLiquido: Number(valorLiquido.toFixed(2))
-    }))
-  }
+      valorLiquido: Number(valorLiquido.toFixed(2)),
+    }));
+  };
 
   const adjustValues = (adjustmentData: AdjustmentData) => {
-    const { taxaAdministrativa } = formData
-    let { liquidValue } = adjustmentData
+    const { taxaAdministrativa } = formData;
+    let { liquidValue } = adjustmentData;
 
     if (adjustmentData.options.cedulas200_500_1000) {
-      liquidValue = liquidValue * 0.88
+      liquidValue = liquidValue * 0.88;
     }
 
-    if (adjustmentData.adjustBy === 'taxa') {
-      const quantidade = formData.quantidade
-      const iof = liquidValue * 0.0038
-      const valorTotal = liquidValue + taxaAdministrativa + iof
-      const taxa = (valorTotal - taxaAdministrativa - iof) / quantidade
+    if (adjustmentData.adjustBy === "taxa") {
+      const quantidade = formData.quantidade;
+      const iof = liquidValue * 0.0038;
+      const valorTotal = liquidValue + taxaAdministrativa + iof;
+      const taxa = (valorTotal - taxaAdministrativa - iof) / quantidade;
 
-      setFormData(prev => ({
+      setFormData((prev) => ({
         ...prev,
         taxa: Number(taxa.toFixed(5)),
         taxaEspecial: Number((taxa * 0.998).toFixed(5)),
         taxaDesejada: Number((taxa * 1.002).toFixed(5)),
         iof: Number(iof.toFixed(2)),
         valorTotal: Number(valorTotal.toFixed(2)),
-        valorLiquido: Number(liquidValue.toFixed(2))
-      }))
+        valorLiquido: Number(liquidValue.toFixed(2)),
+      }));
     } else {
-      const taxa = formData.taxa
-      const quantidade = liquidValue / taxa
-      const iof = quantidade * taxa * 0.0038
-      const valorTotal = quantidade * taxa + iof + taxaAdministrativa
+      const taxa = formData.taxa;
+      const quantidade = liquidValue / taxa;
+      const iof = quantidade * taxa * 0.0038;
+      const valorTotal = quantidade * taxa + iof + taxaAdministrativa;
 
-      setFormData(prev => ({
+      setFormData((prev) => ({
         ...prev,
         quantidade: Number(quantidade.toFixed(2)),
         iof: Number(iof.toFixed(2)),
         valorTotal: Number(valorTotal.toFixed(2)),
-        valorLiquido: Number(liquidValue.toFixed(2))
-      }))
+        valorLiquido: Number(liquidValue.toFixed(2)),
+      }));
     }
-  }
+  };
 
   const roundValues = () => {
-    const { taxaAdministrativa } = formData
-    const valorTotalRounded = Math.ceil(formData.valorTotal)
-    const valorLiquido = valorTotalRounded - taxaAdministrativa - formData.iof
-    const taxa = (valorTotalRounded - taxaAdministrativa - formData.iof) / formData.quantidade
+    const { taxaAdministrativa } = formData;
+    const valorTotalRounded = Math.ceil(formData.valorTotal);
+    const valorLiquido = valorTotalRounded - taxaAdministrativa - formData.iof;
+    const taxa =
+      (valorTotalRounded - taxaAdministrativa - formData.iof) /
+      formData.quantidade;
 
-    setFormData(prev => ({
+    setFormData((prev) => ({
       ...prev,
       taxa: Number(taxa.toFixed(5)),
       taxaEspecial: Number((taxa * 0.998).toFixed(5)),
       taxaDesejada: Number((taxa * 1.002).toFixed(5)),
       valorTotal: valorTotalRounded,
-      valorLiquido: Number(valorLiquido.toFixed(2))
-    }))
-  }
+      valorLiquido: Number(valorLiquido.toFixed(2)),
+    }));
+  };
 
   const handleInputChange = (field: string, value: any) => {
-    setFormData(prev => ({ ...prev, [field]: value }))
-    if (field === 'quantidade') {
-      calculateValues()
+    setFormData((prev) => ({ ...prev, [field]: value }));
+    if (field === "quantidade") {
+      calculateValues();
     }
-  }
+  };
 
   const handleAddToCart = () => {
     const operationData = {
@@ -160,11 +184,11 @@ export function SimplifiedNormalForm({ commonData }: SimplifiedNormalFormProps) 
       valorTotal: formData.valorTotal,
       valorLiquido: formData.valorLiquido,
       campanha: formData.campanha,
-      naturezaOperacao: commonData.naturezaOperacao
-    }
+      naturezaOperacao: commonData.naturezaOperacao,
+    };
 
-    addOperation(operationData)
-  }
+    addOperation(operationData);
+  };
 
   const isFormValid = () => {
     return !!(
@@ -173,25 +197,25 @@ export function SimplifiedNormalForm({ commonData }: SimplifiedNormalFormProps) 
       formData.moeda &&
       commonData.canalAtendimento &&
       formData.quantidade > 0
-    )
-  }
+    );
+  };
 
   const formatCurrency = (value: number, decimals: number = 2) => {
-    return new Intl.NumberFormat('pt-BR', {
-      style: 'currency',
-      currency: 'BRL',
+    return new Intl.NumberFormat("pt-BR", {
+      style: "currency",
+      currency: "BRL",
       minimumFractionDigits: decimals,
-      maximumFractionDigits: decimals
-    }).format(value)
-  }
+      maximumFractionDigits: decimals,
+    }).format(value);
+  };
 
   const formatDecimal = (value: number, decimals: number = 5) => {
-    return value.toFixed(decimals).replace(".", ",")
-  }
+    return value.toFixed(decimals).replace(".", ",");
+  };
 
   useEffect(() => {
-    calculateValues()
-  }, [])
+    calculateValues();
+  }, []);
 
   return (
     <>
@@ -204,20 +228,28 @@ export function SimplifiedNormalForm({ commonData }: SimplifiedNormalFormProps) 
               <Label className="text-xs">Operação *</Label>
               <div className="flex items-center gap-2">
                 <span
-                  className={`cursor-pointer text-xs font-medium ${formData.operacao === 'COMPRA' ? 'text-green-600' : 'text-muted-foreground/70'
-                    }`}
-                  onClick={() => handleInputChange('operacao', 'COMPRA')}
+                  className={`cursor-pointer text-xs font-medium ${
+                    formData.operacao === "COMPRA"
+                      ? "text-green-600"
+                      : "text-muted-foreground/70"
+                  }`}
+                  onClick={() => handleInputChange("operacao", "COMPRA")}
                 >
                   Compra
                 </span>
                 <SwitchTwo
-                  checked={formData.operacao === 'VENDA'}
-                  onCheckedChange={(checked) => handleInputChange('operacao', checked ? 'VENDA' : 'COMPRA')}
+                  checked={formData.operacao === "VENDA"}
+                  onCheckedChange={(checked) =>
+                    handleInputChange("operacao", checked ? "VENDA" : "COMPRA")
+                  }
                 />
                 <span
-                  className={`cursor-pointer text-xs font-medium ${formData.operacao === 'VENDA' ? 'text-red-600' : 'text-muted-foreground/70'
-                    }`}
-                  onClick={() => handleInputChange('operacao', 'VENDA')}
+                  className={`cursor-pointer text-xs font-medium ${
+                    formData.operacao === "VENDA"
+                      ? "text-red-600"
+                      : "text-muted-foreground/70"
+                  }`}
+                  onClick={() => handleInputChange("operacao", "VENDA")}
                 >
                   Venda
                 </span>
@@ -227,7 +259,10 @@ export function SimplifiedNormalForm({ commonData }: SimplifiedNormalFormProps) 
             {/* Moeda - 4 colunas */}
             <div className="col-span-4 space-y-1">
               <Label className="text-xs">Moeda *</Label>
-              <Select value={formData.moeda} onValueChange={(value) => handleInputChange('moeda', value)}>
+              <Select
+                value={formData.moeda}
+                onValueChange={(value) => handleInputChange("moeda", value)}
+              >
                 <SelectTrigger className="h-8 text-sm">
                   <SelectValue placeholder="Selecione a moeda" />
                 </SelectTrigger>
@@ -248,7 +283,12 @@ export function SimplifiedNormalForm({ commonData }: SimplifiedNormalFormProps) 
                 type="number"
                 step="0.01"
                 value={formData.taxaAdministrativa}
-                onChange={(e) => handleInputChange('taxaAdministrativa', parseFloat(e.target.value) || 0)}
+                onChange={(e) =>
+                  handleInputChange(
+                    "taxaAdministrativa",
+                    parseFloat(e.target.value) || 0
+                  )
+                }
                 className="h-8 text-sm"
               />
             </div>
@@ -256,25 +296,24 @@ export function SimplifiedNormalForm({ commonData }: SimplifiedNormalFormProps) 
             {/* Checkboxes - 2 colunas */}
             <div className="col-span-2 space-y-1">
               <div className="flex h-8 items-center gap-4">
-                <div className="flex items-center space-x-1">
-                  <Checkbox
-                    id="corporate"
-                    checked={formData.corporate}
-                    disabled={true}
-                    onCheckedChange={(checked) => handleInputChange('corporate', checked)}
-                    className="h-4 w-4"
-                  />
-                  <Label htmlFor="corporate" className="text-sm opacity-50">Corporate</Label>
-                </div>
-                <div className="flex items-center space-x-1">
-                  <Checkbox
-                    id="retiradaHoje"
-                    checked={formData.retiradaHoje}
-                    onCheckedChange={(checked) => handleInputChange('retiradaHoje', checked)}
-                    className="h-4 w-4"
-                  />
-                  <Label htmlFor="retiradaHoje" className="text-sm">Retirada D0</Label>
-                </div>
+                <CheckboxField
+                  id="corporate"
+                  checked={formData.corporate}
+                  disabled={true}
+                  onCheckedChange={(checked) =>
+                    handleInputChange("corporate", checked)
+                  }
+                  label="Corporate"
+                />
+
+                <CheckboxField
+                  id="retiradaHoje"
+                  checked={formData.retiradaHoje}
+                  onCheckedChange={(checked) =>
+                    handleInputChange("retiradaHoje", checked)
+                  }
+                  label="Retirada D0"
+                />
               </div>
             </div>
           </div>
@@ -285,7 +324,7 @@ export function SimplifiedNormalForm({ commonData }: SimplifiedNormalFormProps) 
               <Label className="text-xs">Quantidade *</Label>
               <CurrencyInput
                 value={formData.quantidade}
-                onChange={(value) => handleInputChange('quantidade', value)}
+                onChange={(value) => handleInputChange("quantidade", value)}
                 className="h-8 text-sm"
               />
             </div>
@@ -348,7 +387,7 @@ export function SimplifiedNormalForm({ commonData }: SimplifiedNormalFormProps) 
               <Input
                 type="text"
                 value={formData.campanha}
-                onChange={(e) => handleInputChange('campanha', e.target.value)}
+                onChange={(e) => handleInputChange("campanha", e.target.value)}
                 placeholder="Digite a campanha"
                 className="h-8 text-sm max-w-sm"
               />
@@ -358,11 +397,15 @@ export function SimplifiedNormalForm({ commonData }: SimplifiedNormalFormProps) 
           {/* Linha 4 - Resumo */}
           <div className="grid grid-cols-2 gap-4 py-2 border-t">
             <div>
-              <Label className="text-xs font-medium text-orange-600">Spread da Operação</Label>
+              <Label className="text-xs font-medium text-orange-600">
+                Spread da Operação
+              </Label>
               <div className="text-lg font-bold text-orange-600">6,00 %</div>
             </div>
             <div>
-              <Label className="text-xs font-medium text-red-600">Resultado da Operação</Label>
+              <Label className="text-xs font-medium text-red-600">
+                Resultado da Operação
+              </Label>
               <div className="text-lg font-bold text-red-600">R$ 0,33</div>
             </div>
           </div>
@@ -411,5 +454,5 @@ export function SimplifiedNormalForm({ commonData }: SimplifiedNormalFormProps) 
         initialValue={formData.valorLiquido}
       />
     </>
-  )
+  );
 }

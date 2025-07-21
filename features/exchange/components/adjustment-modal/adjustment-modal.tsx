@@ -1,83 +1,93 @@
-"use client"
+"use client";
 
-import { useState } from "react"
-import { Button, Input, Label, RadioGroup, RadioGroupItem, Checkbox } from "@mfe/cc-front-shared"
-import { BaseModal } from "@/components/ui/base-modal"
-import { CheckIcon, InfoIcon, XIcon } from "lucide-react"
+import { useState } from "react";
+import {
+  Button,
+  Input,
+  Label,
+  RadioGroup,
+  RadioGroupItem,
+} from "@mfe/cc-front-shared";
+import { BaseModal } from "@/components/ui/base-modal";
+import { CheckIcon, InfoIcon, XIcon } from "lucide-react";
+import { CheckboxField } from "@/components/ui/checkbox-field";
 
 interface AdjustmentModalProps {
-  isOpen: boolean
-  onClose: () => void
-  onConfirm: (adjustmentData: AdjustmentData) => void
-  initialValue?: number
+  isOpen: boolean;
+  onClose: () => void;
+  onConfirm: (adjustmentData: AdjustmentData) => void;
+  initialValue?: number;
 }
 
 export interface AdjustmentData {
-  adjustBy: 'taxa' | 'quantidade'
-  liquidValue: number
+  adjustBy: "taxa" | "quantidade";
+  liquidValue: number;
   options: {
-    cedulas200_500_1000: boolean
-    caraGrandeBrancaPequena: boolean
-    foraCirculacao: boolean
-    manchadasRiscadas: boolean
-  }
-  discountApplied?: number
+    cedulas200_500_1000: boolean;
+    caraGrandeBrancaPequena: boolean;
+    foraCirculacao: boolean;
+    manchadasRiscadas: boolean;
+  };
+  discountApplied?: number;
 }
 
 export function AdjustmentModal({
   isOpen,
   onClose,
   onConfirm,
-  initialValue = 493.51
+  initialValue = 493.51,
 }: AdjustmentModalProps) {
-  const [adjustBy, setAdjustBy] = useState<'taxa' | 'quantidade'>('taxa')
-  const [liquidValue, setLiquidValue] = useState(initialValue)
+  const [adjustBy, setAdjustBy] = useState<"taxa" | "quantidade">("taxa");
+  const [liquidValue, setLiquidValue] = useState(initialValue);
   const [options, setOptions] = useState({
     cedulas200_500_1000: false,
     caraGrandeBrancaPequena: false,
     foraCirculacao: false,
-    manchadasRiscadas: false
-  })
+    manchadasRiscadas: false,
+  });
 
-  const handleOptionChange = (optionKey: keyof typeof options, checked: boolean) => {
-    const newOptions = { ...options, [optionKey]: checked }
-    setOptions(newOptions)
+  const handleOptionChange = (
+    optionKey: keyof typeof options,
+    checked: boolean
+  ) => {
+    const newOptions = { ...options, [optionKey]: checked };
+    setOptions(newOptions);
 
     // Calcular desconto quando alguma opção é selecionada
-    if (checked && optionKey === 'cedulas200_500_1000') {
+    if (checked && optionKey === "cedulas200_500_1000") {
       // Aplicar desconto de 12% quando cédulas de 200, 500 e/ou 1000 são selecionadas
-      const discount = liquidValue * 0.12
-      setLiquidValue(liquidValue - discount)
+      const discount = liquidValue * 0.12;
+      setLiquidValue(liquidValue - discount);
     }
-  }
+  };
 
   const handleConfirm = () => {
     const adjustmentData: AdjustmentData = {
       adjustBy,
       liquidValue,
       options,
-      discountApplied: options.cedulas200_500_1000 ? 12 : undefined
-    }
-    onConfirm(adjustmentData)
-    onClose()
-  }
+      discountApplied: options.cedulas200_500_1000 ? 12 : undefined,
+    };
+    onConfirm(adjustmentData);
+    onClose();
+  };
 
   const handleCancel = () => {
     // Reset form
-    setAdjustBy('taxa')
-    setLiquidValue(initialValue)
+    setAdjustBy("taxa");
+    setLiquidValue(initialValue);
     setOptions({
       cedulas200_500_1000: false,
       caraGrandeBrancaPequena: false,
       foraCirculacao: false,
-      manchadasRiscadas: false
-    })
-    onClose()
-  }
+      manchadasRiscadas: false,
+    });
+    onClose();
+  };
 
   const formatCurrency = (value: number) => {
-    return value.toFixed(2).replace('.', ',')
-  }
+    return value.toFixed(2).replace(".", ",");
+  };
 
   return (
     <BaseModal
@@ -95,16 +105,22 @@ export function AdjustmentModal({
           <Label className="text-sm font-medium">Ajustar:</Label>
           <RadioGroup
             value={adjustBy}
-            onValueChange={(value) => setAdjustBy(value as 'taxa' | 'quantidade')}
+            onValueChange={(value) =>
+              setAdjustBy(value as "taxa" | "quantidade")
+            }
             className="flex gap-6"
           >
             <div className="flex items-center space-x-2">
               <RadioGroupItem value="taxa" id="taxa" />
-              <Label htmlFor="taxa" className="text-sm">Taxa</Label>
+              <Label htmlFor="taxa" className="text-sm">
+                Taxa
+              </Label>
             </div>
             <div className="flex items-center space-x-2">
               <RadioGroupItem value="quantidade" id="quantidade" />
-              <Label htmlFor="quantidade" className="text-sm">Quantidade</Label>
+              <Label htmlFor="quantidade" className="text-sm">
+                Quantidade
+              </Label>
             </div>
           </RadioGroup>
         </div>
@@ -119,9 +135,9 @@ export function AdjustmentModal({
             type="text"
             value={formatCurrency(liquidValue)}
             onChange={(e) => {
-              const value = e.target.value.replace(',', '.')
-              const numValue = parseFloat(value) || 0
-              setLiquidValue(numValue)
+              const value = e.target.value.replace(",", ".");
+              const numValue = parseFloat(value) || 0;
+              setLiquidValue(numValue);
             }}
             className="w-32"
           />
@@ -130,57 +146,44 @@ export function AdjustmentModal({
         {/* Opções de desconto */}
         <div className="space-y-3">
           <div className="space-y-2">
-            <div className="flex items-center space-x-2">
-              <Checkbox
-                id="cedulas200"
-                checked={options.cedulas200_500_1000}
-                onCheckedChange={(checked) =>
-                  handleOptionChange('cedulas200_500_1000', checked as boolean)
-                }
-              />
-              <Label htmlFor="cedulas200" className="text-sm">
-                Cédulas de 200, 500 e/ou 1000
-              </Label>
-            </div>
+            <CheckboxField
+              id="cedulas200"
+              checked={options.cedulas200_500_1000}
+              onCheckedChange={(checked) =>
+                handleOptionChange("cedulas200_500_1000", checked as boolean)
+              }
+              label="Cédulas de 200, 500 e/ou 1000"
+            />
 
-            <div className="flex items-center space-x-2">
-              <Checkbox
-                id="caraGrande"
-                checked={options.caraGrandeBrancaPequena}
-                onCheckedChange={(checked) =>
-                  handleOptionChange('caraGrandeBrancaPequena', checked as boolean)
-                }
-              />
-              <Label htmlFor="caraGrande" className="text-sm">
-                Cara grande, branca e/ou pequena
-              </Label>
-            </div>
+            <CheckboxField
+              id="caraGrande"
+              checked={options.caraGrandeBrancaPequena}
+              label="Cara grande, branca e/ou pequena"
+              onCheckedChange={(checked) =>
+                handleOptionChange(
+                  "caraGrandeBrancaPequena",
+                  checked as boolean
+                )
+              }
+            />
 
-            <div className="flex items-center space-x-2">
-              <Checkbox
-                id="foraCirculacao"
-                checked={options.foraCirculacao}
-                onCheckedChange={(checked) =>
-                  handleOptionChange('foraCirculacao', checked as boolean)
-                }
-              />
-              <Label htmlFor="foraCirculacao" className="text-sm">
-                Fora de circulação
-              </Label>
-            </div>
+            <CheckboxField
+              id="foraCirculacao"
+              checked={options.foraCirculacao}
+              onCheckedChange={(checked) =>
+                handleOptionChange("foraCirculacao", checked as boolean)
+              }
+              label="Fora de circulação"
+            />
 
-            <div className="flex items-center space-x-2">
-              <Checkbox
-                id="manchadas"
-                checked={options.manchadasRiscadas}
-                onCheckedChange={(checked) =>
-                  handleOptionChange('manchadasRiscadas', checked as boolean)
-                }
-              />
-              <Label htmlFor="manchadas" className="text-sm">
-                Manchadas, riscadas ou com pequenos rasgos
-              </Label>
-            </div>
+            <CheckboxField
+              id="manchadas"
+              checked={options.manchadasRiscadas}
+              onCheckedChange={(checked) =>
+                handleOptionChange("manchadasRiscadas", checked as boolean)
+              }
+              label="Manchadas, riscadas ou com pequenos rasgos"
+            />
           </div>
 
           {/* Mostrar desconto aplicado */}
@@ -212,5 +215,5 @@ export function AdjustmentModal({
         </div>
       </div>
     </BaseModal>
-  )
+  );
 }

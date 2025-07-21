@@ -11,6 +11,7 @@
   },
   "dependencies": {
     "@mfe/cc-front-shared": "^0.0.73",
+    "@radix-ui/react-icons": "^1.3.2",
     "@radix-ui/react-label": "^2.1.7",
     "@radix-ui/react-switch": "^1.2.5",
     "@radix-ui/react-tabs": "^1.1.12",

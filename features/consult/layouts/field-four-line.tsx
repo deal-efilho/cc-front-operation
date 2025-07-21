@@ -4,7 +4,8 @@ import { ListFilter } from "lucide-react";
 
 import { Button } from "@mfe/cc-front-shared";
 
-import { CheckboxField } from "../components";
+import { CheckboxField } from "@/components/ui/checkbox-field";
+
 import { useFilterDataStateStore, type FieldFilter } from "../hooks";
 
 interface FieldFourLineProps {
@@ -42,8 +43,8 @@ export const FieldFourLine = ({ onFilter }: FieldFourLineProps) => {
             id={id}
             key={id}
             label={label}
-            value={value}
-            handleChange={handleChange}
+            checked={value}
+            onCheckedChange={handleChange}
           />
         ))}
       </div>

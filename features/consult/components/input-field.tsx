@@ -3,7 +3,7 @@
 import { Input, Label } from "@mfe/cc-front-shared";
 
 interface InputFieldProps {
-  value: string;
+  value?: string;
   handleChange: (value: string) => void;
   label: string;
   id: string;
@@ -16,10 +16,10 @@ export const InputField = ({
   handleChange,
   id,
   label,
-  value,
+  value = '',
   onFocus,
   type,
-  modifiWidth = 'min-w-64',
+  modifiWidth = "min-w-64",
 }: InputFieldProps) => (
   <div className="space-y-5" onFocus={onFocus && onFocus}>
     <div className="flex items-center space-x-2">

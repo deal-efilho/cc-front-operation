@@ -10,23 +10,23 @@ export type FieldFilter =
   | "onlyMineValue"
   | "onlyWithBalanceValue";
 
-interface SetFilterData {
+interface SetFilterDataProps {
   field: FieldFilter;
   value: string | boolean;
 }
 
 interface FilterDataState {
   filterData: {
-    bankIdValue: string;
-    certificateValue: string;
-    clientNameValue: string;
-    createdAtFromValue: string;
-    createdAtToValue: string;
-    numberValue: string;
-    onlyMineValue: boolean;
-    onlyWithBalanceValue: boolean;
+    bankIdValue?: string;
+    certificateValue?: string;
+    clientNameValue?: string;
+    createdAtFromValue?: string;
+    createdAtToValue?: string;
+    numberValue?: string;
+    onlyMineValue?: boolean;
+    onlyWithBalanceValue?: boolean;
   };
-  setFilterData: ({ field, value }: SetFilterData) => void;
+  setFilterData: ({ field, value }: SetFilterDataProps) => void;
 }
 
 const setInitialDate = () => {
@@ -51,7 +51,15 @@ const filterData = {
   onlyWithBalanceValue: true,
 };
 
-export const useFilterDataStateStore = create<FilterDataState>((set) => ({
+export const useFilterDataStateStore = create<FilterDataState>((set, get) => ({
   filterData,
-  setFilterData: ({ field, value }: SetFilterData) => set({ [field]: value }),
+  setFilterData: ({ field, value }: SetFilterDataProps) => {
+    const currentFilterData = get().filterData;
+    set({
+      filterData: {
+        ...currentFilterData,
+        [field]: value,
+      },
+    });
+  },
 }));
