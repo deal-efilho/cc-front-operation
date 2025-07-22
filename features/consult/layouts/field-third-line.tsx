@@ -2,61 +2,54 @@
 
 import { InputField } from "../components";
 
-import { useFilterDataStateStore, type FieldFilter } from "../hooks";
-
 export const FieldThirdLine = () => {
-  const { filterData, setFilterData } = useFilterDataStateStore();
+  const setInitialDate = () => {
+    const date = new Date();
+    const dia = String(date.getDate()).padStart(2, "0");
+    const mes = String(date.getMonth() + 1).padStart(2, "0");
+    const ano = date.getFullYear();
 
-  const handleFilterDataChange = (value: string, field: FieldFilter) =>
-    setFilterData({ field, value });
+    const dataFormatada = `${ano}-${mes}-${dia}`;
+
+    return dataFormatada;
+  };
 
   const fields = [
     {
       id: "bankId",
       label: "Identificador banco",
       type: "number",
-      value: filterData.bankIdValue,
-      handleChange: (value: string) =>
-        handleFilterDataChange(value, "bankIdValue"),
     },
     {
       id: "certificate",
       label: "Certificado Allianz",
-      value: filterData.certificateValue,
-      handleChange: (value: string) =>
-        handleFilterDataChange(value, "certificateValue"),
     },
     {
       id: "createdAtFrom",
       label: "Criação de:",
       type: "date",
-      value: filterData.createdAtFromValue,
-      handleChange: (value: string) =>
-        handleFilterDataChange(value, "createdAtFromValue"),
       modifiWidth: "min-w-24",
+      defaultValue: setInitialDate(),
     },
     {
       id: "createdAtTo",
       label: "a:",
       type: "date",
-      value: filterData.createdAtToValue,
-      handleChange: (value: string) =>
-        handleFilterDataChange(value, "createdAtToValue"),
       modifiWidth: "min-w-24",
+      defaultValue: setInitialDate(),
     },
   ];
 
   return (
     <div className="flex center justify-between">
-      {fields.map(({ id, label, value, type, handleChange, modifiWidth }) => (
+      {fields.map(({ id, label, type, modifiWidth, defaultValue }) => (
         <InputField
           id={id}
           key={id}
           label={label}
           type={type}
-          value={value}
-          handleChange={handleChange}
           modifiWidth={modifiWidth}
+          defaultValue={defaultValue}
         />
       ))}
     </div>
