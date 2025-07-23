@@ -2,7 +2,7 @@
 "use client"
 
 import { Button, Card, CardContent, StarRating, Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@mfe/cc-front-shared"
-import { ClockIcon, Link2Icon, SquareArrowOutUpRightIcon, UserIcon, SearchIcon } from "lucide-react"
+import { ClockIcon, Link2Icon, SquareArrowOutUpRightIcon, UserIcon, SearchIcon, AlertCircleIcon } from "lucide-react"
 import { useModal } from "@/hooks/use-modal"
 import { ClientDetailsModal } from "../client-details-modal/client-details-modal"
 import { HistoryModal } from "../history-modal/history-modal"
@@ -57,6 +57,11 @@ export function CompactClientInfo({
     // Implementar lógica de pesquisa de contato
   }
 
+  const handlePendencias = () => {
+    console.log('Abrindo pendências do cliente:', nome)
+    // Implementar lógica de pendências
+  }
+
   return (
     <>
       <Card className="bg-blue-50 border-blue-200">
@@ -94,6 +99,16 @@ export function CompactClientInfo({
                 >
                   <ClockIcon className="size-3" />
                   Histórico
+                </Button>
+
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={handlePendencias}
+                  className="flex items-center gap-1 h-8 text-xs px-3"
+                >
+                  <AlertCircleIcon className="size-3" />
+                  Pendências
                 </Button>
               </div>
             </div>

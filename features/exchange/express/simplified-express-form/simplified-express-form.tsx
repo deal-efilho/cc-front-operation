@@ -12,7 +12,6 @@ interface CurrencyLineData {
   moeda: string
   moedaLabel: string
   moedaNome: string
-  bandeira: string
   taxaCompra: number
   taxaVenda: number
   quantidade: number
@@ -25,8 +24,7 @@ const TODAS_MOEDAS: CurrencyLineData[] = [
   {
     moeda: "USD_ESPECIE",
     moedaLabel: "USD",
-    moedaNome: "Dólar Americano",
-    bandeira: "🇺🇸",
+    moedaNome: "Espécie",
     taxaCompra: 5.08375,
     taxaVenda: 5.18420,
     quantidade: 0,
@@ -37,8 +35,7 @@ const TODAS_MOEDAS: CurrencyLineData[] = [
   {
     moeda: "EUR_ESPECIE",
     moedaLabel: "EUR",
-    moedaNome: "Euro",
-    bandeira: "🇪🇺",
+    moedaNome: "Espécie",
     taxaCompra: 5.45123,
     taxaVenda: 5.55890,
     quantidade: 0,
@@ -49,8 +46,7 @@ const TODAS_MOEDAS: CurrencyLineData[] = [
   {
     moeda: "GBP_ESPECIE",
     moedaLabel: "GBP",
-    moedaNome: "Libra Esterlina",
-    bandeira: "🇬🇧",
+    moedaNome: "Espécie",
     taxaCompra: 6.12456,
     taxaVenda: 6.24789,
     quantidade: 0,
@@ -61,8 +57,7 @@ const TODAS_MOEDAS: CurrencyLineData[] = [
   {
     moeda: "CAD_ESPECIE",
     moedaLabel: "CAD",
-    moedaNome: "Dólar Canadense",
-    bandeira: "🇨🇦",
+    moedaNome: "Espécie",
     taxaCompra: 3.75234,
     taxaVenda: 3.82156,
     quantidade: 0,
@@ -73,8 +68,7 @@ const TODAS_MOEDAS: CurrencyLineData[] = [
   {
     moeda: "AUD_ESPECIE",
     moedaLabel: "AUD",
-    moedaNome: "Dólar Australiano",
-    bandeira: "🇦🇺",
+    moedaNome: "Espécie",
     taxaCompra: 3.32145,
     taxaVenda: 3.38967,
     quantidade: 0,
@@ -85,8 +79,7 @@ const TODAS_MOEDAS: CurrencyLineData[] = [
   {
     moeda: "JPY_ESPECIE",
     moedaLabel: "JPY",
-    moedaNome: "Iene Japonês",
-    bandeira: "🇯🇵",
+    moedaNome: "Espécie",
     taxaCompra: 0.03234,
     taxaVenda: 0.03389,
     quantidade: 0,
@@ -97,8 +90,7 @@ const TODAS_MOEDAS: CurrencyLineData[] = [
   {
     moeda: "CHF_ESPECIE",
     moedaLabel: "CHF",
-    moedaNome: "Franco Suíço",
-    bandeira: "🇨🇭",
+    moedaNome: "Espécie",
     taxaCompra: 5.67234,
     taxaVenda: 5.78456,
     quantidade: 0,
@@ -314,7 +306,6 @@ export function SimplifiedExpressForm({ commonData }: SimplifiedExpressFormProps
                       {/* Header da moeda */}
                       <div className="flex items-center justify-between mb-3">
                         <div className="flex items-center gap-3">
-                          <span className="text-lg">{line.bandeira}</span>
                           <div>
                             <div className="text-sm font-bold">{line.moedaLabel}</div>
                             <div className="text-xs text-gray-500">{line.moedaNome}</div>
@@ -360,8 +351,8 @@ export function SimplifiedExpressForm({ commonData }: SimplifiedExpressFormProps
                             <button
                               onClick={() => handleTaxaClick(originalIndex, 'compra')}
                               className={`flex-1 p-2 text-xs rounded border transition-all ${line.operacaoSelecionada === 'compra'
-                                  ? 'bg-green-100 border-green-400 text-green-800 font-semibold'
-                                  : 'bg-white border-gray-200 hover:bg-green-50'
+                                ? 'bg-green-100 border-green-400 text-green-800 font-semibold'
+                                : 'bg-white border-gray-200 hover:bg-green-50'
                                 }`}
                             >
                               <div className="text-xs font-medium">Compra</div>
@@ -370,8 +361,8 @@ export function SimplifiedExpressForm({ commonData }: SimplifiedExpressFormProps
                             <button
                               onClick={() => handleTaxaClick(originalIndex, 'venda')}
                               className={`flex-1 p-2 text-xs rounded border transition-all ${line.operacaoSelecionada === 'venda'
-                                  ? 'bg-red-100 border-red-400 text-red-800 font-semibold'
-                                  : 'bg-white border-gray-200 hover:bg-red-50'
+                                ? 'bg-red-100 border-red-400 text-red-800 font-semibold'
+                                : 'bg-white border-gray-200 hover:bg-red-50'
                                 }`}
                             >
                               <div className="text-xs font-medium">Venda</div>
@@ -414,7 +405,7 @@ export function SimplifiedExpressForm({ commonData }: SimplifiedExpressFormProps
                             value={formatCurrency(line.valor)}
                             readOnly
                             className={`h-8 text-xs text-center font-semibold ${line.operacaoSelecionada === 'compra' ? 'bg-green-100' :
-                                line.operacaoSelecionada === 'venda' ? 'bg-red-100' : 'bg-gray-100'
+                              line.operacaoSelecionada === 'venda' ? 'bg-red-100' : 'bg-gray-100'
                               }`}
                           />
                         </div>
@@ -425,8 +416,8 @@ export function SimplifiedExpressForm({ commonData }: SimplifiedExpressFormProps
                             onClick={() => handleAddToCart(originalIndex)}
                             disabled={!line.operacaoSelecionada || line.quantidade <= 0}
                             className={`h-8 w-full text-xs ${line.operacaoSelecionada === 'compra' ? 'bg-green-600 hover:bg-green-700' :
-                                line.operacaoSelecionada === 'venda' ? 'bg-red-600 hover:bg-red-700' :
-                                  'bg-gray-400'
+                              line.operacaoSelecionada === 'venda' ? 'bg-red-600 hover:bg-red-700' :
+                                'bg-gray-400'
                               }`}
                             size="sm"
                           >

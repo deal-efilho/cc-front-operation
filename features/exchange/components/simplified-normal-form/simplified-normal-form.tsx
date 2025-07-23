@@ -221,7 +221,7 @@ export function SimplifiedNormalForm({ commonData, onCommonDataChange }: Simplif
     <>
       <Card className="w-full">
         <CardContent className="space-y-3 p-4">
-          {/* Linha 1 - Operação, Moeda, Taxa Admin e Natureza */}
+          {/* Linha 1 - Operação, Moeda, Taxa Admin */}
           <div className="grid grid-cols-12 gap-3 items-end">
             {/* Operação - 2 colunas */}
             <div className="col-span-2 space-y-2">
@@ -229,8 +229,8 @@ export function SimplifiedNormalForm({ commonData, onCommonDataChange }: Simplif
               <div className="flex items-center gap-2">
                 <span
                   className={`cursor-pointer text-xs font-medium ${formData.operacao === "COMPRA"
-                      ? "text-green-600"
-                      : "text-muted-foreground/70"
+                    ? "text-green-600"
+                    : "text-muted-foreground/70"
                     }`}
                   onClick={() => handleInputChange("operacao", "COMPRA")}
                 >
@@ -244,8 +244,8 @@ export function SimplifiedNormalForm({ commonData, onCommonDataChange }: Simplif
                 />
                 <span
                   className={`cursor-pointer text-xs font-medium ${formData.operacao === "VENDA"
-                      ? "text-red-600"
-                      : "text-muted-foreground/70"
+                    ? "text-red-600"
+                    : "text-muted-foreground/70"
                     }`}
                   onClick={() => handleInputChange("operacao", "VENDA")}
                 >
@@ -254,8 +254,8 @@ export function SimplifiedNormalForm({ commonData, onCommonDataChange }: Simplif
               </div>
             </div>
 
-            {/* Moeda - 3 colunas */}
-            <div className="col-span-3 space-y-1">
+            {/* Moeda - 4 colunas */}
+            <div className="col-span-4 space-y-1">
               <Label className="text-xs">Moeda *</Label>
               <Select
                 value={formData.moeda}
@@ -291,26 +291,8 @@ export function SimplifiedNormalForm({ commonData, onCommonDataChange }: Simplif
               />
             </div>
 
-            {/* Natureza - 3 colunas */}
-            <div className="col-span-3 space-y-1">
-              <Label className="text-xs">Natureza *</Label>
-              <Select
-                value={commonData.naturezaOperacao}
-                onValueChange={(value) => onCommonDataChange('naturezaOperacao', value)}
-              >
-                <SelectTrigger className="h-8 text-xs">
-                  <SelectValue />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="32999 - Viagem Internacional">
-                    32999 - Viagem Internacional
-                  </SelectItem>
-                </SelectContent>
-              </Select>
-            </div>
-
-            {/* Checkboxes - 2 colunas */}
-            <div className="col-span-2 space-y-1">
+            {/* Checkboxes - 4 colunas */}
+            <div className="col-span-4 space-y-1">
               <div className="flex h-8 items-center gap-4">
                 <CheckboxField
                   id="corporate"
@@ -396,8 +378,8 @@ export function SimplifiedNormalForm({ commonData, onCommonDataChange }: Simplif
             </div>
           </div>
 
-          {/* Linha 3 - Campanha */}
-          <div className="grid grid-cols-1">
+          {/* Linha 3 - Campanha e Natureza */}
+          <div className="grid grid-cols-2 gap-3">
             <div className="space-y-1">
               <Label className="text-xs">Campanha</Label>
               <Input
@@ -405,8 +387,25 @@ export function SimplifiedNormalForm({ commonData, onCommonDataChange }: Simplif
                 value={formData.campanha}
                 onChange={(e) => handleInputChange("campanha", e.target.value)}
                 placeholder="Digite a campanha"
-                className="h-8 text-sm max-w-sm"
+                className="h-8 text-sm"
               />
+            </div>
+
+            <div className="space-y-1">
+              <Label className="text-xs">Natureza *</Label>
+              <Select
+                value={commonData.naturezaOperacao}
+                onValueChange={(value) => onCommonDataChange('naturezaOperacao', value)}
+              >
+                <SelectTrigger className="h-8 text-xs">
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="32999 - Viagem Internacional">
+                    32999 - Viagem Internacional
+                  </SelectItem>
+                </SelectContent>
+              </Select>
             </div>
           </div>
 
