@@ -116,7 +116,7 @@ export function SharedExchangeSection({ commonData, onCommonDataChange }: Shared
           {/* Campo de busca + configurações em linha */}
           <div className="grid grid-cols-12 gap-2 items-end">
             {/* Documento - 4 colunas */}
-            <div className="col-span-3">
+            <div className="col-span-4">
               <Input
                 type="text"
                 value={documentValue}
@@ -138,8 +138,8 @@ export function SharedExchangeSection({ commonData, onCommonDataChange }: Shared
               </Button>
             </div>
 
-            {/* Loja - 2 colunas */}
-            <div className="col-span-3 space-y-1">
+            {/* Loja - 4 colunas */}
+            <div className="col-span-4 space-y-1">
               <Label className="text-xs text-gray-600">Loja</Label>
               <Select
                 value={commonData.loja}
@@ -158,8 +158,8 @@ export function SharedExchangeSection({ commonData, onCommonDataChange }: Shared
               </Select>
             </div>
 
-            {/* Canal - 2 colunas */}
-            <div className="col-span-2 space-y-1">
+            {/* Canal - 3 colunas */}
+            <div className="col-span-3 space-y-1">
               <Label className="text-xs text-gray-600">Canal</Label>
               <Select
                 value={commonData.canalAtendimento}
@@ -174,24 +174,6 @@ export function SharedExchangeSection({ commonData, onCommonDataChange }: Shared
                       {canal.label}
                     </SelectItem>
                   ))}
-                </SelectContent>
-              </Select>
-            </div>
-
-            {/* Natureza - 3 colunas */}
-            <div className="col-span-3 space-y-1">
-              <Label className="text-xs text-gray-600">Natureza</Label>
-              <Select
-                value={commonData.naturezaOperacao}
-                onValueChange={(value) => onCommonDataChange('naturezaOperacao', value)}
-              >
-                <SelectTrigger className="h-8 text-xs">
-                  <SelectValue />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="32999 - Viagem Internacional">
-                    32999 - Viagem Internacional
-                  </SelectItem>
                 </SelectContent>
               </Select>
             </div>

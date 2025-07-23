@@ -54,17 +54,16 @@ interface SimplifiedFormData {
 
 interface SimplifiedNormalFormProps {
   commonData: {
-    loja: string;
-    canalAtendimento: string;
-    naturezaOperacao: string;
-  };
+    loja: string
+    canalAtendimento: string
+    naturezaOperacao: string
+  }
+  onCommonDataChange: (field: string, value: string) => void
 }
 
-export function SimplifiedNormalForm({
-  commonData,
-}: SimplifiedNormalFormProps) {
-  const { addOperation } = useOperationsCartStore();
-  const adjustmentModal = useModal();
+export function SimplifiedNormalForm({ commonData, onCommonDataChange }: SimplifiedNormalFormProps) {
+  const { addOperation } = useOperationsCartStore()
+  const adjustmentModal = useModal()
 
   const [formData, setFormData] = React.useState<SimplifiedFormData>({
     operacao: "COMPRA",
@@ -196,9 +195,10 @@ export function SimplifiedNormalForm({
       formData.operacao &&
       formData.moeda &&
       commonData.canalAtendimento &&
-      formData.quantidade > 0
-    );
-  };
+      formData.quantidade > 0 &&
+      commonData.naturezaOperacao
+    )
+  }
 
   const formatCurrency = (value: number, decimals: number = 2) => {
     return new Intl.NumberFormat("pt-BR", {
@@ -221,18 +221,17 @@ export function SimplifiedNormalForm({
     <>
       <Card className="w-full">
         <CardContent className="space-y-3 p-4">
-          {/* Linha 1 - Operação, Moeda e Taxa Admin */}
+          {/* Linha 1 - Operação, Moeda, Taxa Admin e Natureza */}
           <div className="grid grid-cols-12 gap-3 items-end">
-            {/* Operação - 3 colunas */}
+            {/* Operação - 2 colunas */}
             <div className="col-span-2 space-y-2">
               <Label className="text-xs">Operação *</Label>
               <div className="flex items-center gap-2">
                 <span
-                  className={`cursor-pointer text-xs font-medium ${
-                    formData.operacao === "COMPRA"
+                  className={`cursor-pointer text-xs font-medium ${formData.operacao === "COMPRA"
                       ? "text-green-600"
                       : "text-muted-foreground/70"
-                  }`}
+                    }`}
                   onClick={() => handleInputChange("operacao", "COMPRA")}
                 >
                   Compra
@@ -244,11 +243,10 @@ export function SimplifiedNormalForm({
                   }
                 />
                 <span
-                  className={`cursor-pointer text-xs font-medium ${
-                    formData.operacao === "VENDA"
+                  className={`cursor-pointer text-xs font-medium ${formData.operacao === "VENDA"
                       ? "text-red-600"
                       : "text-muted-foreground/70"
-                  }`}
+                    }`}
                   onClick={() => handleInputChange("operacao", "VENDA")}
                 >
                   Venda
@@ -256,8 +254,8 @@ export function SimplifiedNormalForm({
               </div>
             </div>
 
-            {/* Moeda - 4 colunas */}
-            <div className="col-span-4 space-y-1">
+            {/* Moeda - 3 colunas */}
+            <div className="col-span-3 space-y-1">
               <Label className="text-xs">Moeda *</Label>
               <Select
                 value={formData.moeda}
@@ -276,8 +274,8 @@ export function SimplifiedNormalForm({
               </Select>
             </div>
 
-            {/* Taxa Admin - 3 colunas */}
-            <div className="col-span-3 space-y-1">
+            {/* Taxa Admin - 2 colunas */}
+            <div className="col-span-2 space-y-1">
               <Label className="text-xs">Taxa Admin *</Label>
               <Input
                 type="number"
@@ -291,6 +289,24 @@ export function SimplifiedNormalForm({
                 }
                 className="h-8 text-sm"
               />
+            </div>
+
+            {/* Natureza - 3 colunas */}
+            <div className="col-span-3 space-y-1">
+              <Label className="text-xs">Natureza *</Label>
+              <Select
+                value={commonData.naturezaOperacao}
+                onValueChange={(value) => onCommonDataChange('naturezaOperacao', value)}
+              >
+                <SelectTrigger className="h-8 text-xs">
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="32999 - Viagem Internacional">
+                    32999 - Viagem Internacional
+                  </SelectItem>
+                </SelectContent>
+              </Select>
             </div>
 
             {/* Checkboxes - 2 colunas */}

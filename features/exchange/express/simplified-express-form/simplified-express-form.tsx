@@ -15,32 +15,24 @@ interface CurrencyLineData {
   bandeira: string
   taxaCompra: number
   taxaVenda: number
-  quantidadeCompra: number
-  quantidadeVenda: number
-  taxaAdminCompra: number
-  taxaAdminVenda: number
-  valorCompra: number
-  valorVenda: number
-  spreadCompra: number
-  spreadVenda: number
+  quantidade: number
+  taxaAdmin: number
+  valor: number
+  operacaoSelecionada: 'compra' | 'venda' | null
 }
 
 const TODAS_MOEDAS: CurrencyLineData[] = [
   {
     moeda: "USD_ESPECIE",
-    moedaLabel: "Dólar",
-    moedaNome: "Espécie",
-    bandeira: "/us_flag.png",
+    moedaLabel: "USD",
+    moedaNome: "Dólar Americano",
+    bandeira: "🇺🇸",
     taxaCompra: 5.08375,
     taxaVenda: 5.18420,
-    quantidadeCompra: 0,
-    quantidadeVenda: 0,
-    taxaAdminCompra: 12.90,
-    taxaAdminVenda: 12.90,
-    valorCompra: 0,
-    valorVenda: 0,
-    spreadCompra: 6.00,
-    spreadVenda: 6.00
+    quantidade: 0,
+    taxaAdmin: 12.90,
+    valor: 0,
+    operacaoSelecionada: null
   },
   {
     moeda: "EUR_ESPECIE",
@@ -49,14 +41,10 @@ const TODAS_MOEDAS: CurrencyLineData[] = [
     bandeira: "🇪🇺",
     taxaCompra: 5.45123,
     taxaVenda: 5.55890,
-    quantidadeCompra: 0,
-    quantidadeVenda: 0,
-    taxaAdminCompra: 12.90,
-    taxaAdminVenda: 12.90,
-    valorCompra: 0,
-    valorVenda: 0,
-    spreadCompra: 6.00,
-    spreadVenda: 6.00
+    quantidade: 0,
+    taxaAdmin: 12.90,
+    valor: 0,
+    operacaoSelecionada: null
   },
   {
     moeda: "GBP_ESPECIE",
@@ -65,14 +53,10 @@ const TODAS_MOEDAS: CurrencyLineData[] = [
     bandeira: "🇬🇧",
     taxaCompra: 6.12456,
     taxaVenda: 6.24789,
-    quantidadeCompra: 0,
-    quantidadeVenda: 0,
-    taxaAdminCompra: 12.90,
-    taxaAdminVenda: 12.90,
-    valorCompra: 0,
-    valorVenda: 0,
-    spreadCompra: 6.00,
-    spreadVenda: 6.00
+    quantidade: 0,
+    taxaAdmin: 12.90,
+    valor: 0,
+    operacaoSelecionada: null
   },
   {
     moeda: "CAD_ESPECIE",
@@ -81,14 +65,10 @@ const TODAS_MOEDAS: CurrencyLineData[] = [
     bandeira: "🇨🇦",
     taxaCompra: 3.75234,
     taxaVenda: 3.82156,
-    quantidadeCompra: 0,
-    quantidadeVenda: 0,
-    taxaAdminCompra: 12.90,
-    taxaAdminVenda: 12.90,
-    valorCompra: 0,
-    valorVenda: 0,
-    spreadCompra: 6.00,
-    spreadVenda: 6.00
+    quantidade: 0,
+    taxaAdmin: 12.90,
+    valor: 0,
+    operacaoSelecionada: null
   },
   {
     moeda: "AUD_ESPECIE",
@@ -97,14 +77,10 @@ const TODAS_MOEDAS: CurrencyLineData[] = [
     bandeira: "🇦🇺",
     taxaCompra: 3.32145,
     taxaVenda: 3.38967,
-    quantidadeCompra: 0,
-    quantidadeVenda: 0,
-    taxaAdminCompra: 12.90,
-    taxaAdminVenda: 12.90,
-    valorCompra: 0,
-    valorVenda: 0,
-    spreadCompra: 6.00,
-    spreadVenda: 6.00
+    quantidade: 0,
+    taxaAdmin: 12.90,
+    valor: 0,
+    operacaoSelecionada: null
   },
   {
     moeda: "JPY_ESPECIE",
@@ -113,14 +89,10 @@ const TODAS_MOEDAS: CurrencyLineData[] = [
     bandeira: "🇯🇵",
     taxaCompra: 0.03234,
     taxaVenda: 0.03389,
-    quantidadeCompra: 0,
-    quantidadeVenda: 0,
-    taxaAdminCompra: 12.90,
-    taxaAdminVenda: 12.90,
-    valorCompra: 0,
-    valorVenda: 0,
-    spreadCompra: 6.00,
-    spreadVenda: 6.00
+    quantidade: 0,
+    taxaAdmin: 12.90,
+    valor: 0,
+    operacaoSelecionada: null
   },
   {
     moeda: "CHF_ESPECIE",
@@ -129,94 +101,10 @@ const TODAS_MOEDAS: CurrencyLineData[] = [
     bandeira: "🇨🇭",
     taxaCompra: 5.67234,
     taxaVenda: 5.78456,
-    quantidadeCompra: 0,
-    quantidadeVenda: 0,
-    taxaAdminCompra: 12.90,
-    taxaAdminVenda: 12.90,
-    valorCompra: 0,
-    valorVenda: 0,
-    spreadCompra: 6.00,
-    spreadVenda: 6.00
-  },
-  {
-    moeda: "ARS_ESPECIE",
-    moedaLabel: "ARS",
-    moedaNome: "Peso Argentino",
-    bandeira: "🇦🇷",
-    taxaCompra: 0.00523,
-    taxaVenda: 0.00567,
-    quantidadeCompra: 0,
-    quantidadeVenda: 0,
-    taxaAdminCompra: 12.90,
-    taxaAdminVenda: 12.90,
-    valorCompra: 0,
-    valorVenda: 0,
-    spreadCompra: 6.00,
-    spreadVenda: 6.00
-  },
-  {
-    moeda: "UYU_ESPECIE",
-    moedaLabel: "UYU",
-    moedaNome: "Peso Uruguaio",
-    bandeira: "🇺🇾",
-    taxaCompra: 0.11234,
-    taxaVenda: 0.11789,
-    quantidadeCompra: 0,
-    quantidadeVenda: 0,
-    taxaAdminCompra: 12.90,
-    taxaAdminVenda: 12.90,
-    valorCompra: 0,
-    valorVenda: 0,
-    spreadCompra: 6.00,
-    spreadVenda: 6.00
-  },
-  {
-    moeda: "CLP_ESPECIE",
-    moedaLabel: "CLP",
-    moedaNome: "Peso Chileno",
-    bandeira: "🇨🇱",
-    taxaCompra: 0.00523,
-    taxaVenda: 0.00567,
-    quantidadeCompra: 0,
-    quantidadeVenda: 0,
-    taxaAdminCompra: 12.90,
-    taxaAdminVenda: 12.90,
-    valorCompra: 0,
-    valorVenda: 0,
-    spreadCompra: 6.00,
-    spreadVenda: 6.00
-  },
-  {
-    moeda: "MXN_ESPECIE",
-    moedaLabel: "MXN",
-    moedaNome: "Peso Mexicano",
-    bandeira: "🇲🇽",
-    taxaCompra: 0.28456,
-    taxaVenda: 0.29123,
-    quantidadeCompra: 0,
-    quantidadeVenda: 0,
-    taxaAdminCompra: 12.90,
-    taxaAdminVenda: 12.90,
-    valorCompra: 0,
-    valorVenda: 0,
-    spreadCompra: 6.00,
-    spreadVenda: 6.00
-  },
-  {
-    moeda: "PYG_ESPECIE",
-    moedaLabel: "PYG",
-    moedaNome: "Guarani Paraguaio",
-    bandeira: "🇵🇾",
-    taxaCompra: 0.00067,
-    taxaVenda: 0.00072,
-    quantidadeCompra: 0,
-    quantidadeVenda: 0,
-    taxaAdminCompra: 12.90,
-    taxaAdminVenda: 12.90,
-    valorCompra: 0,
-    valorVenda: 0,
-    spreadCompra: 6.00,
-    spreadVenda: 6.00
+    quantidade: 0,
+    taxaAdmin: 12.90,
+    valor: 0,
+    operacaoSelecionada: null
   }
 ]
 
@@ -235,65 +123,57 @@ export function SimplifiedExpressForm({ commonData }: SimplifiedExpressFormProps
   const [activeLineIndex, setActiveLineIndex] = useState<number | null>(null)
   const [searchTerm, setSearchTerm] = useState("")
 
-  // Filtrar moedas baseado no termo de busca
   const filteredCurrencies = currencyLines.filter(line =>
     line.moedaLabel.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    line.moedaNome.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    line.moeda.toLowerCase().includes(searchTerm.toLowerCase())
+    line.moedaNome.toLowerCase().includes(searchTerm.toLowerCase())
   )
 
-  const calculateValues = (lineData: CurrencyLineData, tipo: 'compra' | 'venda', quantidade: number) => {
-    const taxa = tipo === 'compra' ? lineData.taxaCompra : lineData.taxaVenda
-    const taxaAdmin = tipo === 'compra' ? lineData.taxaAdminCompra : lineData.taxaAdminVenda
-    const valor = quantidade * taxa + taxaAdmin
-    const spread = tipo === 'compra' ? lineData.spreadCompra : lineData.spreadVenda
+  const calculateValue = (line: CurrencyLineData, quantidade: number) => {
+    if (!line.operacaoSelecionada || quantidade <= 0) return 0
 
-    return {
-      valor: Number(valor.toFixed(2)),
-      spread: spread
-    }
+    const taxa = line.operacaoSelecionada === 'compra' ? line.taxaCompra : line.taxaVenda
+    return quantidade * taxa + line.taxaAdmin
   }
 
-  const handleQuantityChange = (index: number, tipo: 'compra' | 'venda', quantidade: number) => {
+  const handleTaxaClick = (index: number, operacao: 'compra' | 'venda') => {
     setCurrencyLines(prev => prev.map((line, i) => {
       if (i !== index) return line
 
-      const calculated = calculateValues(line, tipo, quantidade)
+      const novaOperacao = line.operacaoSelecionada === operacao ? null : operacao
+      const novoValor = novaOperacao ? calculateValue({ ...line, operacaoSelecionada: novaOperacao }, line.quantidade) : 0
 
-      if (tipo === 'compra') {
-        return {
-          ...line,
-          quantidadeCompra: quantidade,
-          valorCompra: calculated.valor
-        }
-      } else {
-        return {
-          ...line,
-          quantidadeVenda: quantidade,
-          valorVenda: calculated.valor
-        }
+      return {
+        ...line,
+        operacaoSelecionada: novaOperacao,
+        valor: novoValor
       }
     }))
   }
 
-  const handleTaxaAdminChange = (index: number, tipo: 'compra' | 'venda', taxaAdmin: number) => {
+  const handleQuantityChange = (index: number, quantidade: number) => {
     setCurrencyLines(prev => prev.map((line, i) => {
       if (i !== index) return line
 
-      if (tipo === 'compra') {
-        const calculated = calculateValues({ ...line, taxaAdminCompra: taxaAdmin }, tipo, line.quantidadeCompra)
-        return {
-          ...line,
-          taxaAdminCompra: taxaAdmin,
-          valorCompra: calculated.valor
-        }
-      } else {
-        const calculated = calculateValues({ ...line, taxaAdminVenda: taxaAdmin }, tipo, line.quantidadeVenda)
-        return {
-          ...line,
-          taxaAdminVenda: taxaAdmin,
-          valorVenda: calculated.valor
-        }
+      const novoValor = calculateValue(line, quantidade)
+
+      return {
+        ...line,
+        quantidade,
+        valor: novoValor
+      }
+    }))
+  }
+
+  const handleTaxaAdminChange = (index: number, taxaAdmin: number) => {
+    setCurrencyLines(prev => prev.map((line, i) => {
+      if (i !== index) return line
+
+      const novoValor = calculateValue({ ...line, taxaAdmin }, line.quantidade)
+
+      return {
+        ...line,
+        taxaAdmin,
+        valor: novoValor
       }
     }))
   }
@@ -302,13 +182,11 @@ export function SimplifiedExpressForm({ commonData }: SimplifiedExpressFormProps
     setCurrencyLines(prev => prev.map((line, i) => {
       if (i !== index) return line
 
-      const calculatedCompra = calculateValues(line, 'compra', line.quantidadeCompra)
-      const calculatedVenda = calculateValues(line, 'venda', line.quantidadeVenda)
+      const novoValor = calculateValue(line, line.quantidade)
 
       return {
         ...line,
-        valorCompra: calculatedCompra.valor,
-        valorVenda: calculatedVenda.valor
+        valor: novoValor
       }
     }))
   }
@@ -322,56 +200,51 @@ export function SimplifiedExpressForm({ commonData }: SimplifiedExpressFormProps
     setCurrencyLines(prev => prev.map((line, i) => {
       if (i !== index) return line
 
-      const valorCompraRounded = Math.ceil(line.valorCompra)
-      const valorVendaRounded = Math.ceil(line.valorVenda)
-
       return {
         ...line,
-        valorCompra: valorCompraRounded,
-        valorVenda: valorVendaRounded
+        valor: Math.ceil(line.valor)
       }
     }))
   }
 
-  const handleAddToCart = (index: number, tipo: 'compra' | 'venda') => {
+  const handleAddToCart = (index: number) => {
     const line = currencyLines[index]
-    const quantidade = tipo === 'compra' ? line.quantidadeCompra : line.quantidadeVenda
-    const valor = tipo === 'compra' ? line.valorCompra : line.valorVenda
 
-    if (quantidade <= 0) return
+    if (!line.operacaoSelecionada || line.quantidade <= 0) return
 
     const operationData = {
       loja: commonData.loja,
-      operacao: tipo.toUpperCase() as 'COMPRA' | 'VENDA',
+      operacao: line.operacaoSelecionada.toUpperCase() as 'COMPRA' | 'VENDA',
       moeda: line.moeda,
-      taxaAdministrativa: tipo === 'compra' ? line.taxaAdminCompra : line.taxaAdminVenda,
+      taxaAdministrativa: line.taxaAdmin,
       canalAtendimento: commonData.canalAtendimento,
       corporate: false,
       retiradaHoje: false,
-      quantidade: quantidade,
-      taxa: tipo === 'compra' ? line.taxaCompra : line.taxaVenda,
-      taxaEspecial: (tipo === 'compra' ? line.taxaCompra : line.taxaVenda) * 0.998,
-      taxaDesejada: (tipo === 'compra' ? line.taxaCompra : line.taxaVenda) * 1.002,
+      quantidade: line.quantidade,
+      taxa: line.operacaoSelecionada === 'compra' ? line.taxaCompra : line.taxaVenda,
+      taxaEspecial: (line.operacaoSelecionada === 'compra' ? line.taxaCompra : line.taxaVenda) * 0.998,
+      taxaDesejada: (line.operacaoSelecionada === 'compra' ? line.taxaCompra : line.taxaVenda) * 1.002,
       iof: 0,
-      valorTotal: valor,
-      valorLiquido: valor - (tipo === 'compra' ? line.taxaAdminCompra : line.taxaAdminVenda),
+      valorTotal: line.valor,
+      valorLiquido: line.valor - line.taxaAdmin,
       campanha: "",
       naturezaOperacao: commonData.naturezaOperacao
     }
 
     addOperation(operationData)
 
-    // Limpar quantidade após adicionar
-    handleQuantityChange(index, tipo, 0)
+    // Limpar após adicionar
+    setCurrencyLines(prev => prev.map((l, i) => i === index ? {
+      ...l,
+      quantidade: 0,
+      valor: 0,
+      operacaoSelecionada: null
+    } : l))
   }
 
   const adjustValues = (adjustmentData: AdjustmentData) => {
     if (activeLineIndex === null) return
     console.log('Ajustando linha:', activeLineIndex, adjustmentData)
-  }
-
-  const clearSearch = () => {
-    setSearchTerm("")
   }
 
   const formatCurrency = (value: number) => {
@@ -389,33 +262,26 @@ export function SimplifiedExpressForm({ commonData }: SimplifiedExpressFormProps
     <>
       <Card className="w-full">
         <CardContent className="p-0">
-          {/* Header fixo com título e busca */}
-          <div className="p-4 border-b bg-gradient-to-r from-blue-50 to-indigo-50">
+          {/* Header com busca */}
+          <div className="p-4 border-b bg-blue-50">
             <div className="flex items-center justify-between mb-3">
-              <div className="flex items-center gap-2">
-                <div className="w-2 h-2 bg-blue-500 rounded-full animate-pulse"></div>
-                <h3 className="text-sm font-semibold text-gray-800">Câmbio Express</h3>
-                <span className="text-xs text-gray-500">• Operações Rápidas</span>
-              </div>
-              <div className="text-xs text-gray-500">
-                {filteredCurrencies.length} de {currencyLines.length} moedas
-              </div>
+              <h3 className="text-sm font-semibold">Câmbio Express - Operação Única</h3>
+              <span className="text-xs text-gray-500">{filteredCurrencies.length} moedas</span>
             </div>
 
-            {/* Campo de busca elegante */}
             <div className="relative">
               <SearchIcon className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 size-4" />
               <Input
                 type="text"
-                placeholder="Buscar por código, nome ou país (USD, Dólar, Estados Unidos...)"
+                placeholder="Buscar moeda (USD, EUR, Dólar...)"
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
-                className="pl-10 pr-10 h-9 text-sm border-gray-200 focus:border-blue-400 focus:ring-blue-400 bg-white/80 backdrop-blur-sm"
+                className="pl-10 pr-10 h-9 text-sm"
               />
               {searchTerm && (
                 <button
-                  onClick={clearSearch}
-                  className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-600 transition-colors"
+                  onClick={() => setSearchTerm("")}
+                  className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-600"
                 >
                   <XIcon className="size-4" />
                 </button>
@@ -423,46 +289,34 @@ export function SimplifiedExpressForm({ commonData }: SimplifiedExpressFormProps
             </div>
           </div>
 
-          {/* Container com scroll para as moedas */}
+          {/* Lista de moedas */}
           <div className="max-h-96 overflow-y-auto">
-            {/* Verificar se há resultados */}
             {filteredCurrencies.length === 0 ? (
               <div className="text-center text-gray-500 py-12">
                 <SearchIcon className="size-12 text-gray-300 mx-auto mb-4" />
                 <div className="text-sm">Nenhuma moeda encontrada</div>
-                <div className="text-xs text-gray-400 mt-1">
-                  Tente buscar por: {searchTerm ? `"${searchTerm.slice(0, 20)}"` : 'USD, EUR, Dólar...'}
-                </div>
-                {searchTerm && (
-                  <Button
-                    variant="outline"
-                    size="sm"
-                    onClick={clearSearch}
-                    className="mt-3 text-xs"
-                  >
-                    Limpar busca
-                  </Button>
-                )}
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={() => setSearchTerm("")}
+                  className="mt-3 text-xs"
+                >
+                  Limpar busca
+                </Button>
               </div>
             ) : (
-              /* Linhas de Moedas Filtradas */
               <div className="p-3 space-y-3">
                 {filteredCurrencies.map((line, filteredIndex) => {
-                  // Encontrar o índice original para as operações
                   const originalIndex = currencyLines.findIndex(original => original.moeda === line.moeda)
 
                   return (
-                    <div key={line.moeda} className="border rounded-xl p-4 space-y-3 bg-gradient-to-r from-gray-50 to-white hover:from-blue-50 hover:to-indigo-50 transition-all duration-200 shadow-sm hover:shadow-md">
-                      {/* Linha 1 - Header da Moeda com bandeira */}
-                      <div className="flex items-center justify-between">
+                    <div key={line.moeda} className="border rounded-lg p-4 bg-gray-50 hover:bg-blue-50 transition-colors">
+                      {/* Header da moeda */}
+                      <div className="flex items-center justify-between mb-3">
                         <div className="flex items-center gap-3">
-                          {line.bandeira.includes("png") ? (
-                            <img src={line.bandeira} className="h-6 w-6" />
-                          ) : (
-                            <span className="text-lg">{line.bandeira}</span>
-                          )}
+                          <span className="text-lg">{line.bandeira}</span>
                           <div>
-                            <div className="text-sm font-bold text-gray-800">{line.moedaLabel}</div>
+                            <div className="text-sm font-bold">{line.moedaLabel}</div>
                             <div className="text-xs text-gray-500">{line.moedaNome}</div>
                           </div>
                         </div>
@@ -471,7 +325,7 @@ export function SimplifiedExpressForm({ commonData }: SimplifiedExpressFormProps
                             variant="outline"
                             size="sm"
                             onClick={() => handleRecalcular(originalIndex)}
-                            className="h-7 w-7 p-0 hover:bg-blue-50 hover:border-blue-300"
+                            className="h-7 w-7 p-0"
                             title="Recalcular"
                           >
                             <RefreshCwIcon className="size-3" />
@@ -480,7 +334,7 @@ export function SimplifiedExpressForm({ commonData }: SimplifiedExpressFormProps
                             variant="outline"
                             size="sm"
                             onClick={() => handleAjustar(originalIndex)}
-                            className="h-7 w-7 p-0 hover:bg-orange-50 hover:border-orange-300"
+                            className="h-7 w-7 p-0"
                             title="Ajustar"
                           >
                             <SettingsIcon className="size-3" />
@@ -489,7 +343,7 @@ export function SimplifiedExpressForm({ commonData }: SimplifiedExpressFormProps
                             variant="outline"
                             size="sm"
                             onClick={() => handleArredondar(originalIndex)}
-                            className="h-7 w-7 p-0 hover:bg-purple-50 hover:border-purple-300"
+                            className="h-7 w-7 p-0"
                             title="Arredondar"
                           >
                             <CircleIcon className="size-3" />
@@ -497,123 +351,87 @@ export function SimplifiedExpressForm({ commonData }: SimplifiedExpressFormProps
                         </div>
                       </div>
 
-                      {/* Linha 2 - Compra com visual melhorado */}
-                      <div className="grid grid-cols-12 gap-2 items-end p-2 bg-green-50/50 rounded-lg border border-green-100">
-                        <div className="col-span-1 text-xs font-semibold text-green-700 pb-1 flex items-center gap-1">
-                          <div className="w-2 h-2 bg-green-500 rounded-full"></div>
-                          Compra
+                      {/* Linha única com taxas clicáveis */}
+                      <div className="grid grid-cols-12 gap-2 items-end">
+                        {/* Taxas clicáveis - 4 colunas */}
+                        <div className="col-span-4 space-y-1">
+                          <Label className="text-xs text-gray-600">Taxas (clique para selecionar)</Label>
+                          <div className="flex gap-1">
+                            <button
+                              onClick={() => handleTaxaClick(originalIndex, 'compra')}
+                              className={`flex-1 p-2 text-xs rounded border transition-all ${line.operacaoSelecionada === 'compra'
+                                  ? 'bg-green-100 border-green-400 text-green-800 font-semibold'
+                                  : 'bg-white border-gray-200 hover:bg-green-50'
+                                }`}
+                            >
+                              <div className="text-xs font-medium">Compra</div>
+                              <div className="font-mono">{formatDecimal(line.taxaCompra)}</div>
+                            </button>
+                            <button
+                              onClick={() => handleTaxaClick(originalIndex, 'venda')}
+                              className={`flex-1 p-2 text-xs rounded border transition-all ${line.operacaoSelecionada === 'venda'
+                                  ? 'bg-red-100 border-red-400 text-red-800 font-semibold'
+                                  : 'bg-white border-gray-200 hover:bg-red-50'
+                                }`}
+                            >
+                              <div className="text-xs font-medium">Venda</div>
+                              <div className="font-mono">{formatDecimal(line.taxaVenda)}</div>
+                            </button>
+                          </div>
                         </div>
-                        <div className="col-span-2">
-                          <Label className="text-xs text-gray-600 font-medium">Taxa</Label>
-                          <Input
-                            value={formatDecimal(line.taxaCompra)}
-                            readOnly
-                            className="h-8 text-xs bg-white text-center font-mono border-green-200"
-                          />
-                        </div>
-                        <div className="col-span-2">
-                          <Label className="text-xs text-gray-600 font-medium">Quantidade</Label>
-                          <Input
-                            type="number"
-                            step="0.01"
-                            value={line.quantidadeCompra || ''}
-                            onChange={(e) => handleQuantityChange(originalIndex, 'compra', parseFloat(e.target.value) || 0)}
-                            className="h-8 text-xs text-center border-green-200 focus:border-green-400"
-                            placeholder="0,00"
-                          />
-                        </div>
-                        <div className="col-span-2">
-                          <Label className="text-xs text-gray-600 font-medium">Taxa Admin</Label>
-                          <Input
-                            type="number"
-                            step="0.01"
-                            value={line.taxaAdminCompra}
-                            onChange={(e) => handleTaxaAdminChange(originalIndex, 'compra', parseFloat(e.target.value) || 0)}
-                            className="h-8 text-xs text-center border-green-200 focus:border-green-400"
-                          />
-                        </div>
-                        <div className="col-span-2">
-                          <Label className="text-xs text-gray-600 font-medium">Valor</Label>
-                          <Input
-                            value={formatCurrency(line.valorCompra)}
-                            readOnly
-                            className="h-8 text-xs bg-green-100 text-center font-semibold"
-                          />
-                        </div>
-                        <div className="col-span-2">
-                          <Label className="text-xs text-gray-600 font-medium">Spread %</Label>
-                          <Input
-                            value={`${line.spreadCompra.toFixed(2)}%`}
-                            readOnly
-                            className="h-8 text-xs bg-green-100 text-center font-bold text-green-700"
-                          />
-                        </div>
-                        <div className="col-span-1">
-                          <Button
-                            onClick={() => handleAddToCart(originalIndex, 'compra')}
-                            disabled={line.quantidadeCompra <= 0}
-                            className="h-8 w-full p-0 bg-green-600 hover:bg-green-700 disabled:bg-gray-300"
-                            size="sm"
-                          >
-                            <PlusIcon className="size-3" />
-                          </Button>
-                        </div>
-                      </div>
 
-                      {/* Linha 3 - Venda com visual melhorado */}
-                      <div className="grid grid-cols-12 gap-2 items-end p-2 bg-red-50/50 rounded-lg border border-red-100">
-                        <div className="col-span-1 text-xs font-semibold text-red-700 pb-1 flex items-center gap-1">
-                          <div className="w-2 h-2 bg-red-500 rounded-full"></div>
-                          Venda
-                        </div>
+                        {/* Quantidade - 2 colunas */}
                         <div className="col-span-2">
-                          <Input
-                            value={formatDecimal(line.taxaVenda)}
-                            readOnly
-                            className="h-8 text-xs bg-white text-center font-mono border-red-200"
-                          />
-                        </div>
-                        <div className="col-span-2">
+                          <Label className="text-xs text-gray-600">Quantidade</Label>
                           <Input
                             type="number"
                             step="0.01"
-                            value={line.quantidadeVenda || ''}
-                            onChange={(e) => handleQuantityChange(originalIndex, 'venda', parseFloat(e.target.value) || 0)}
-                            className="h-8 text-xs text-center border-red-200 focus:border-red-400"
+                            value={line.quantidade || ''}
+                            onChange={(e) => handleQuantityChange(originalIndex, parseFloat(e.target.value) || 0)}
+                            className="h-8 text-xs text-center"
                             placeholder="0,00"
+                            disabled={!line.operacaoSelecionada}
                           />
                         </div>
+
+                        {/* Taxa Admin - 2 colunas */}
                         <div className="col-span-2">
+                          <Label className="text-xs text-gray-600">Taxa Admin</Label>
                           <Input
                             type="number"
                             step="0.01"
-                            value={line.taxaAdminVenda}
-                            onChange={(e) => handleTaxaAdminChange(originalIndex, 'venda', parseFloat(e.target.value) || 0)}
-                            className="h-8 text-xs text-center border-red-200 focus:border-red-400"
+                            value={line.taxaAdmin}
+                            onChange={(e) => handleTaxaAdminChange(originalIndex, parseFloat(e.target.value) || 0)}
+                            className="h-8 text-xs text-center"
+                            disabled={!line.operacaoSelecionada}
                           />
                         </div>
+
+                        {/* Valor Total - 2 colunas */}
                         <div className="col-span-2">
+                          <Label className="text-xs text-gray-600">Valor Total</Label>
                           <Input
-                            value={formatCurrency(line.valorVenda)}
+                            value={formatCurrency(line.valor)}
                             readOnly
-                            className="h-8 text-xs bg-red-100 text-center font-semibold"
+                            className={`h-8 text-xs text-center font-semibold ${line.operacaoSelecionada === 'compra' ? 'bg-green-100' :
+                                line.operacaoSelecionada === 'venda' ? 'bg-red-100' : 'bg-gray-100'
+                              }`}
                           />
                         </div>
+
+                        {/* Botão Adicionar - 2 colunas */}
                         <div className="col-span-2">
-                          <Input
-                            value={`${line.spreadVenda.toFixed(2)}%`}
-                            readOnly
-                            className="h-8 text-xs bg-red-100 text-center font-bold text-red-700"
-                          />
-                        </div>
-                        <div className="col-span-1">
                           <Button
-                            onClick={() => handleAddToCart(originalIndex, 'venda')}
-                            disabled={line.quantidadeVenda <= 0}
-                            className="h-8 w-full p-0 bg-red-600 hover:bg-red-700 disabled:bg-gray-300"
+                            onClick={() => handleAddToCart(originalIndex)}
+                            disabled={!line.operacaoSelecionada || line.quantidade <= 0}
+                            className={`h-8 w-full text-xs ${line.operacaoSelecionada === 'compra' ? 'bg-green-600 hover:bg-green-700' :
+                                line.operacaoSelecionada === 'venda' ? 'bg-red-600 hover:bg-red-700' :
+                                  'bg-gray-400'
+                              }`}
                             size="sm"
                           >
-                            <PlusIcon className="size-3" />
+                            <PlusIcon className="size-3 mr-1" />
+                            {line.operacaoSelecionada ? line.operacaoSelecionada.charAt(0).toUpperCase() + line.operacaoSelecionada.slice(1) : 'Adicionar'}
                           </Button>
                         </div>
                       </div>
@@ -630,7 +448,7 @@ export function SimplifiedExpressForm({ commonData }: SimplifiedExpressFormProps
         isOpen={adjustmentModal.isOpen}
         onClose={adjustmentModal.close}
         onConfirm={adjustValues}
-        initialValue={activeLineIndex !== null ? currencyLines[activeLineIndex].valorCompra : 0}
+        initialValue={activeLineIndex !== null ? currencyLines[activeLineIndex].valor : 0}
       />
     </>
   )

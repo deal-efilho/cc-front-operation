@@ -69,7 +69,7 @@ export const DocumentSearch = ({ onFocus }: DocumentSearchProps) => {
           value={documentValue}
           onChange={handleInputChange}
           placeholder={getPlaceholder()}
-          className="flex-1 min-w-80"
+          className="flex-1 min-w-60"
         />
       </div>
     </div>

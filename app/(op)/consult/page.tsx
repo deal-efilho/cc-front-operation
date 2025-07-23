@@ -51,7 +51,7 @@ const ConsultPage = () => {
           </Card>
         </div>
       </div>
-      <ViewProposalModal/>
+      <ViewProposalModal />
       <CancelProposalModal />
       {filter && <FilterResponse />}
     </div>
