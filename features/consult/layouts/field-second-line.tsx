@@ -46,7 +46,7 @@ export const FieldSecondLine = () => {
     },
     {
       id: "storeCreate",
-      label: "Loja da taxa",
+      label: "Loja de criação",
       placeholder: "Selecione a Loja",
       options: storeCreateOptions,
       value: storeCreateValue,
