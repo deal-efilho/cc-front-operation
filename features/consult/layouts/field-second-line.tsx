@@ -1,6 +1,6 @@
 "use client";
 
-import { SelectField } from "../components";
+import { SelectField, ComboboxField } from "../components";
 
 import {
   useStatusStore,
@@ -37,6 +37,7 @@ export const FieldSecondLine = () => {
       handleChange: handleStatusChange,
     },
     {
+      type: "combobox",
       id: "storeTax",
       label: "Loja da taxa",
       placeholder: "Selecione a Loja",
@@ -45,6 +46,7 @@ export const FieldSecondLine = () => {
       handleChange: handleStoreTaxChange,
     },
     {
+      type: "combobox",
       id: "storeCreate",
       label: "Loja de criação",
       placeholder: "Selecione a Loja",
@@ -58,33 +60,46 @@ export const FieldSecondLine = () => {
       options: manualContractOptions,
       value: manualContractValue,
       handleChange: handleManualContractChange,
-      modifiWidth: 'min-w-24',
+      modifiWidth: "min-w-24",
     },
   ];
 
   return (
-    <div className="flex center gap-2">
+   <div className="flex center gap-8">
       {fields.map(
         ({
           id,
+          type,
           label,
           placeholder,
           options,
           value,
           handleChange,
           modifiWidth,
-        }) => (
-          <SelectField
-            id={id}
-            key={id}
-            label={label}
-            placeholder={placeholder}
-            options={options}
-            value={value as string}
-            handleChange={handleChange}
-            modifiWidth={modifiWidth}
-          />
-        )
+        }) =>
+          type !== "combobox" ? (
+            <SelectField
+              id={id}
+              key={id}
+              label={label}
+              placeholder={placeholder}
+              options={options}
+              value={value as string}
+              handleChange={handleChange}
+              modifiWidth={modifiWidth}
+            />
+          ) : (
+            <ComboboxField
+              id={id}
+              key={id}
+              label={label}
+              placeholder={placeholder}
+              options={options}
+              value={value as string}
+              handleChange={handleChange}
+              modifiWidth={modifiWidth}
+            />
+          )
       )}
     </div>
   );

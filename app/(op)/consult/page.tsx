@@ -27,13 +27,13 @@ const ConsultPage = () => {
     <div className="flex flex-col gap-4">
       <Heading title="Consultar Proposta" />
       <div className="flex justify-between items-center">
-        <div className="flex flex-col gap-4">
+        <div className="flex flex-col gap-4 w-full">
           <FieldFirstLine />
           <FieldSecondLine />
           <FieldThirdLine />
           <FieldFourLine onFilter={onFilter} />
         </div>
-        <div className="w-80">
+        {/* <div className="w-80">
           <Card className="bg-blue-50 border-blue-200">
             <CardContent className="p-4">
               <div className="flex items-start gap-3">
@@ -49,7 +49,7 @@ const ConsultPage = () => {
               </div>
             </CardContent>
           </Card>
-        </div>
+        </div> */}
       </div>
       <ViewProposalModal />
       <CancelProposalModal />

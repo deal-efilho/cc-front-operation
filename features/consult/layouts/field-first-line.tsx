@@ -11,26 +11,24 @@ export const FieldFirstLine = () => {
       id: "number",
       label: "Número",
       type: "number",
-
-      onFocus: () =>
-        setTextAssistenceValue("Número de identificação da proposta"),
+      tooltipMessage: "Número de identificação da proposta",
     },
     {
       id: "clientName",
       label: "Nome do cliente",
-      onFocus: () => setTextAssistenceValue("Nome do Cliente"),
+      tooltipMessage: "Nome do Cliente",
     },
   ];
 
   return (
-    <div className="flex center justify-between">
-      {fields.map(({ id, label, type, onFocus }) => (
+    <div className="flex center gap-8">
+      {fields.map(({ id, label, type, tooltipMessage }) => (
         <InputField
           id={id}
           key={id}
           label={label}
           type={type}
-          onFocus={onFocus}
+          tooltipMessage={tooltipMessage}
         />
       ))}
 

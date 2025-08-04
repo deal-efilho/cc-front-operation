@@ -1,10 +1,12 @@
 "use client";
 
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { create } from "zustand";
 
 import { Input, Label } from "@mfe/cc-front-shared";
 
+import { Tooltip } from "@/components/tooltip";
+import { usetextAssistenceStore } from "../hooks";
 interface InputFieldProps {
   label: string;
   id: string;
@@ -12,6 +14,7 @@ interface InputFieldProps {
   type?: string;
   modifiWidth?: string;
   defaultValue?: string;
+  tooltipMessage?:string;
 }
 
 interface SetInputValueProps {
@@ -49,9 +52,14 @@ export const InputField = ({
   onFocus,
   type,
   defaultValue,
-  modifiWidth = "min-w-64",
+  modifiWidth = "min-w-[400px]",
+  tooltipMessage,
 }: InputFieldProps) => {
+  const [isOpen, setIsOpen] = useState(false);
+
   const { inputValues, setInputValue } = useInputStore();
+  const handleOpen = () => setIsOpen(true);
+  const handleClose = () => setIsOpen(false);
 
   useEffect(() => {
     if (id && defaultValue) setInputValue({ name: id, value: defaultValue });
@@ -64,15 +72,19 @@ export const InputField = ({
         <Label htmlFor={id}>{label}</Label>
       </div>
 
-      <div className="flex gap-2">
-        <Input
-          type={type || "text"}
-          id={id}
-          value={inputValues?.[id] || ""}
-          onChange={(e) => setInputValue({ name: id, value: e.target.value })}
-          className={`flex-1 [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none ${modifiWidth}`}
-        />
-      </div>
+      <Tooltip isOpen={isOpen} message={tooltipMessage||'Colocar mensagem do tooltip'}>
+        <div className="flex gap-2">
+          <Input
+            onFocus={handleOpen}
+            onBlur={handleClose}
+            type={type || "text"}
+            id={id}
+            value={inputValues?.[id] || ""}
+            onChange={(e) => setInputValue({ name: id, value: e.target.value })}
+            className={`flex-1 [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none ${modifiWidth}`}
+          />
+        </div>
+      </Tooltip>
     </div>
   );
 };

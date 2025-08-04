@@ -28,20 +28,20 @@ export const FieldThirdLine = () => {
       id: "createdAtFrom",
       label: "Criação de:",
       type: "date",
-      modifiWidth: "min-w-24",
+      modifiWidth: "min-w-[150px]",
       defaultValue: setInitialDate(),
     },
     {
       id: "createdAtTo",
       label: "a:",
       type: "date",
-      modifiWidth: "min-w-24",
+      modifiWidth: "min-w-[150px]",
       defaultValue: setInitialDate(),
     },
   ];
 
   return (
-    <div className="flex center justify-between">
+   <div className="flex center gap-8">
       {fields.map(({ id, label, type, modifiWidth, defaultValue }) => (
         <InputField
           id={id}

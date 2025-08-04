@@ -31,7 +31,7 @@ export const SelectField = ({
   id,
   label,
   placeholder,
-  modifiWidth = "min-w-64",
+  modifiWidth = "min-w-[400px]",
 }: SelectFieldProps) => (
   <div className={`space-y-2`}>
     <Label htmlFor={id} className="text-sm">

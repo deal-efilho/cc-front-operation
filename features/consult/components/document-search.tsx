@@ -6,15 +6,25 @@ import {
   useDocumentStore,
   applyCPFMask,
   applyCNPJMask,
+  usetextAssistenceStore,
 } from "../hooks";
+import { useState } from "react";
+import { Tooltip } from "@/components/tooltip";
 
 type DocumentSearchProps = {
   onFocus: () => void;
 };
 
 export const DocumentSearch = ({ onFocus }: DocumentSearchProps) => {
+  const [isOpen, setIsOpen] = useState(false);
+
+  const { textAssistenceValue } = usetextAssistenceStore();
+
   const { selectedType, documentValue, setSelectedType, setDocumentValue } =
     useDocumentStore();
+
+  const handleOpen = () => setIsOpen(true);
+  const handleClose = () => setIsOpen(false);
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value;
@@ -63,15 +73,19 @@ export const DocumentSearch = ({ onFocus }: DocumentSearchProps) => {
         </div>
       </RadioGroup>
 
-      <div className="flex gap-2">
-        <Input
-          type="text"
-          value={documentValue}
-          onChange={handleInputChange}
-          placeholder={getPlaceholder()}
-          className="flex-1 min-w-60"
-        />
-      </div>
+      <Tooltip isOpen={isOpen} message={textAssistenceValue}>
+        <div className="flex gap-2">
+          <Input
+            onFocus={handleOpen}
+            onBlur={handleClose}
+            type="text"
+            value={documentValue}
+            onChange={handleInputChange}
+            placeholder={getPlaceholder()}
+            className="flex-1 min-w-[400px]"
+          />
+        </div>
+      </Tooltip>
     </div>
   );
 };

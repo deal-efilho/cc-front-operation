@@ -1,6 +1,9 @@
 "use client";
 
 import { useState } from "react";
+import { ListFilter } from "lucide-react";
+
+import { Button } from "@mfe/cc-front-shared";
 
 import { DataTable } from "@/components/ui/data-table";
 
@@ -24,15 +27,15 @@ export const FilterResponse = () => {
 
   return (
     <div className="px-6 pt-4 pb-6">
-      <div className="flex justify-between items-center mb-4">
-        <div className="text-sm text-gray-600">
-          Total de {filterResponseMockData.length} propostas encontradas
-        </div>
-      </div>
-
       <div className="border rounded-lg">
         <DataTable
           data={currentData as FilterResponseColumn[]}
+          initialColumnVisibility={{
+            created: false,
+            manualContract: false,
+            corporate: false,
+            totalValue: false,
+          }}
           columns={responseFilterColumns}
           id="history"
           page={currentPage}

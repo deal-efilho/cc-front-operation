@@ -76,7 +76,7 @@ export const responseFilterColumns: ColumnDef<FilterResponseColumn>[] = [
     accessorKey: "balanceToSettle",
     header: "Tem saldo para liquidar?",
     cell: ({ row }) => (
-      <span className="flex w-[120px] justify-center font-mono text-sm font-bold uppercase">
+      <span className="flex justify-center font-mono text-sm font-bold uppercase">
         {row.original.balanceToSettle}
       </span>
     ),
