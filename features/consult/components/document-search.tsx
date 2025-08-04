@@ -82,7 +82,7 @@ export const DocumentSearch = ({ onFocus }: DocumentSearchProps) => {
             value={documentValue}
             onChange={handleInputChange}
             placeholder={getPlaceholder()}
-            className="flex-1 min-w-[400px]"
+            className="flex-1 min-w-[380px]"
           />
         </div>
       </Tooltip>
