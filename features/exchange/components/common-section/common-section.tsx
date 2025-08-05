@@ -5,10 +5,13 @@ import { SearchIcon } from "lucide-react"
 import { useDocumentStore, applyCPFMask, applyCNPJMask } from "../../hooks/use-document-search"
 import { useUserDetailsStore } from "../../hooks/use-user-details"
 import { CompactClientInfo } from "../compact-client-info/compact-client-info"
+import { Combobox } from "@/components/combobox"
 
 const LOJAS = [
   { value: "CPS_SH_DOM_PEDRO", label: "CPS SH DOM PEDRO" },
-  { value: "CPS_JUDIAI_SH", label: "CPS JUDIAI SH" }
+  { value: "CPS_JUDIAI_SH", label: "CPS JUDIAI SH" },
+  { value: "CE_MESA", label: "CE MESA" },
+  { value: "CI_ONLINE", label: "CI ONLINE" }
 ]
 
 const CANAIS_ATENDIMENTO = [
@@ -73,21 +76,13 @@ export function CommonSection({ commonData, onCommonDataChange }: CommonSectionP
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
             <div className="space-y-2">
               <Label htmlFor="loja" className="text-sm">Loja *</Label>
-              <Select
+              <Combobox
                 value={commonData.loja}
-                onValueChange={(value) => onCommonDataChange('loja', value)}
-              >
-                <SelectTrigger className="h-9">
-                  <SelectValue placeholder="Selecione a loja" />
-                </SelectTrigger>
-                <SelectContent>
-                  {LOJAS.map((loja) => (
-                    <SelectItem key={loja.value} value={loja.value}>
-                      {loja.label}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
+                handleChange={(value) => onCommonDataChange('loja', value)}
+                options={LOJAS}
+                placeholder="Selecione a loja"
+                modifiWidth="w-full"
+              />
             </div>
 
             <div className="space-y-2">

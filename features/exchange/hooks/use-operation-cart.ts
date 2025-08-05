@@ -41,8 +41,40 @@ const mapFormDataToOperation = (formData: ExchangeFormData): OperationItem => {
 
 const getMoedaLabel = (moeda: string): string => {
   const moedaMap: Record<string, string> = {
+    // Dólar Americano
     'USD_ESPECIE': 'Dólar Espécie',
-    'EUR_ESPECIE': 'Euro Espécie'
+    'USD_CONFIDENCE': 'Dólar CONFIDENCE MULTI MOEDA PLATINUM',
+    // Euro
+    'EUR_ESPECIE': 'Euro Espécie',
+    'EUR_CONFIDENCE': 'Euro CONFIDENCE MULTI MOEDA PLATINUM',
+    // Libra Esterlina
+    'GBP_ESPECIE': 'Libra Esterlina Espécie',
+    'GBP_CONFIDENCE': 'Libra Esterlina CONFIDENCE MULTI MOEDA PLATINUM',
+    // Dólar Canadense
+    'CAD_ESPECIE': 'Dólar Canadense Espécie',
+    'CAD_CONFIDENCE': 'Dólar Canadense CONFIDENCE MULTI MOEDA PLATINUM',
+    // Dólar Australiano
+    'AUD_ESPECIE': 'Dólar Australiano Espécie',
+    'AUD_CONFIDENCE': 'Dólar Australiano CONFIDENCE MULTI MOEDA PLATINUM',
+    // Outras moedas
+    'NZD_ESPECIE': 'Dólar Neozelandês Espécie',
+    'DKK_ESPECIE': 'Coroa Dinamarquesa Espécie',
+    'NOK_ESPECIE': 'Coroa Norueguesa Espécie',
+    'SEK_ESPECIE': 'Coroa Sueca Espécie',
+    'AED_ESPECIE': 'Dirham Emir. Árabes Espécie',
+    'HKD_ESPECIE': 'Dólar Hong Kong Espécie',
+    'CHF_ESPECIE': 'Franco Suíço Espécie',
+    'JPY_ESPECIE': 'Iene Espécie',
+    'CNY_ESPECIE': 'Yuan Espécie',
+    'PEN_ESPECIE': 'Novo Sol Peruano Espécie',
+    'ARS_ESPECIE': 'Peso Argentino Espécie',
+    'CLP_ESPECIE': 'Peso Chileno Espécie',
+    'COP_ESPECIE': 'Peso Colombiano Espécie',
+    'MXN_ESPECIE': 'Peso Mexicano Espécie',
+    'UYU_ESPECIE': 'Peso Uruguaio Espécie',
+    'ZAR_ESPECIE': 'Rand Espécie',
+    'QAR_ESPECIE': 'Riyal de Qatar Espécie',
+    'ILS_ESPECIE': 'Shekel Israel Espécie'
   }
   return moedaMap[moeda] || moeda
 }

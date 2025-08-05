@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { Button, Card, CardContent, Label } from "@mfe/cc-front-shared";
-import { SaveIcon, EditIcon } from "lucide-react";
+import { SaveIcon, EditIcon, MailIcon, TrashIcon, Trash2Icon } from "lucide-react";
 import { useModal } from "@/hooks/use-modal";
 import { ConfirmationModal } from "@/components/confirmation-modal";
 import { CheckboxField } from "@/components/ui/checkbox-field";
@@ -23,7 +23,6 @@ export interface OperationItem {
 
 interface OperationsCartProps {
   operations: OperationItem[];
-  onCopy: (operation: OperationItem) => void;
   onRemove: (id: string) => void;
   onSave: () => void;
   onRegister: () => void;
@@ -34,7 +33,6 @@ interface OperationsCartProps {
 
 export function OperationsCart({
   operations,
-  onCopy,
   onRemove,
   onSave,
   onRegister,
@@ -44,8 +42,8 @@ export function OperationsCart({
 }: OperationsCartProps) {
   const [cartaoDebitoChecked, setCartaoDebitoChecked] = useState(false);
   const [pendingAction, setPendingAction] = useState<{
-    type: "copy" | "remove";
-    data: OperationItem | string;
+    type: "remove";
+    data: string;
   } | null>(null);
 
   const confirmationModal = useModal();
@@ -57,9 +55,61 @@ export function OperationsCart({
     }).format(value);
   };
 
-  const handleCopyClick = (operation: OperationItem) => {
-    setPendingAction({ type: "copy", data: operation });
-    confirmationModal.open();
+  const generateEmailBody = () => {
+    const currentDate = new Date().toLocaleDateString('pt-BR');
+    const currentTime = new Date().toLocaleTimeString('pt-BR');
+
+    let emailBody = `Assunto: Cotação de Câmbio - ${currentDate}\n\n`;
+    emailBody += `Prezado(a) Cliente,\n\n`;
+    emailBody += `Segue abaixo a cotação solicitada em ${currentDate} às ${currentTime}:\n\n`;
+    emailBody += `RESUMO DAS OPERAÇÕES:\n`;
+    emailBody += `${'='.repeat(50)}\n\n`;
+
+    operations.forEach((operation, index) => {
+      emailBody += `OPERAÇÃO ${index + 1}:\n`;
+      emailBody += `• Tipo: ${operation.operacao}\n`;
+      emailBody += `• Moeda: ${operation.moedaOperacional}\n`;
+      emailBody += `• Quantidade: ${operation.quantidade.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}\n`;
+      emailBody += `• Taxa Negociada: R$ ${operation.taxaNegociada.toFixed(5).replace('.', ',')}\n`;
+      emailBody += `• Valor da Operação: ${formatCurrency(operation.valorOperacao)}\n`;
+      emailBody += `• Taxa Administrativa: ${formatCurrency(operation.taxaAdministrativa)}\n`;
+      emailBody += `• IOF: ${formatCurrency(operation.iof)}\n`;
+      emailBody += `• Valor Total: ${formatCurrency(operation.valorTotal)}\n`;
+      emailBody += `• V.E.T: ${operation.vet.toFixed(5)}\n`;
+      emailBody += `• Corporate: ${operation.corporate ? 'Sim' : 'Não'}\n\n`;
+    });
+
+    emailBody += `${'='.repeat(50)}\n`;
+    emailBody += `TOTAL GERAL: ${formatCurrency(getAbsoluteTotalValue())} (${getTotalType()})\n`;
+    emailBody += `${'='.repeat(50)}\n\n`;
+
+    emailBody += `OBSERVAÇÕES IMPORTANTES:\n`;
+    emailBody += `• Esta cotação é válida por 24 horas\n`;
+    emailBody += `• Valores sujeitos a alteração conforme variação do mercado\n`;
+    emailBody += `• Para efetivação da operação, compareça à agência com documentos\n`;
+    emailBody += `• Dúvidas: entre em contato conosco\n\n`;
+
+    emailBody += `Atenciosamente,\n`;
+    emailBody += `Equipe de Câmbio\n`;
+    emailBody += `${currentDate} - ${currentTime}`;
+
+    return emailBody;
+  };
+
+  const handleCopyClick = async () => {
+    try {
+      const emailBody = generateEmailBody();
+      await navigator.clipboard.writeText(emailBody);
+
+      // Feedback visual (você pode implementar um toast aqui)
+      console.log('Email copiado para o clipboard!');
+
+      // Opcional: mostrar uma notificação temporária
+      alert('Corpo do email copiado para o clipboard!');
+    } catch (err) {
+      console.error('Erro ao copiar para o clipboard:', err);
+      alert('Erro ao copiar para o clipboard. Tente novamente.');
+    }
   };
 
   const handleRemoveClick = (id: string) => {
@@ -69,11 +119,7 @@ export function OperationsCart({
 
   const handleConfirmAction = () => {
     if (pendingAction) {
-      if (pendingAction.type === "copy") {
-        onCopy(pendingAction.data as OperationItem);
-      } else {
-        onRemove(pendingAction.data as string);
-      }
+      onRemove(pendingAction.data);
       setPendingAction(null);
     }
   };
@@ -84,16 +130,7 @@ export function OperationsCart({
   };
 
   const getConfirmationMessage = () => {
-    if (!pendingAction) return "";
-
-    if (pendingAction.type === "copy") {
-      const operation = pendingAction.data as OperationItem;
-      return `Deseja realmente copiar a operação de ${operation.operacao.toLowerCase()} de ${
-        operation.moedaOperacional
-      }?`;
-    } else {
-      return "Deseja realmente remover esta operação do carrinho?";
-    }
+    return "Deseja realmente remover esta operação do carrinho?";
   };
 
   if (operations.length === 0) {
@@ -201,11 +238,11 @@ export function OperationsCart({
                         <Button
                           variant="ghost"
                           size="sm"
-                          onClick={() => handleCopyClick(operation)}
+                          onClick={handleCopyClick}
                           className="h-8 w-8 p-0"
-                          title="Copiar"
+                          title="Copiar email para clipboard"
                         >
-                          <span className="text-blue-600">📋</span>
+                          <MailIcon className="size-4 text-blue-500" />
                         </Button>
                         <Button
                           variant="ghost"
@@ -214,7 +251,7 @@ export function OperationsCart({
                           className="h-8 w-8 p-0"
                           title="Remover"
                         >
-                          <span className="text-red-600">🗑️</span>
+                          <Trash2Icon className="size-4 text-red-500" />
                         </Button>
                       </div>
                     </td>
@@ -229,7 +266,7 @@ export function OperationsCart({
             <CheckboxField
               id="cartaoDebito"
               checked={cartaoDebitoChecked}
-              onCheckedChange={(value) => console.log(value)}
+              onCheckedChange={setCartaoDebitoChecked}
               disabled
               label="Propostas criadas para cancelamento de Cartão de Débito"
             />
@@ -241,25 +278,27 @@ export function OperationsCart({
           </div>
 
           {/* Botões movidos para baixo */}
-          <div className="flex justify-end gap-2 pt-4">
-            <Button
-              variant="primary"
-              size="sm"
-              onClick={onSave}
-              className="flex items-center gap-2"
-            >
-              <SaveIcon className="size-4" />
-              Salvar / Incluir Proposta
-            </Button>
-            <Button
-              variant="destructive"
-              size="sm"
-              onClick={onRegister}
-              className="flex items-center gap-2"
-            >
-              <EditIcon className="size-4" />
-              Registrar Cotação
-            </Button>
+          <div className="flex justify-end items-center pt-4">
+            <div className="flex gap-2">
+              <Button
+                variant="primary"
+                size="sm"
+                onClick={onSave}
+                className="flex items-center gap-2"
+              >
+                <SaveIcon className="size-4" />
+                Salvar / Incluir Proposta
+              </Button>
+              <Button
+                variant="destructive"
+                size="sm"
+                onClick={onRegister}
+                className="flex items-center gap-2"
+              >
+                <EditIcon className="size-4" />
+                Registrar Cotação
+              </Button>
+            </div>
           </div>
         </div>
 
@@ -267,15 +306,11 @@ export function OperationsCart({
           isOpen={confirmationModal.isOpen}
           onClose={handleCancelAction}
           onConfirm={handleConfirmAction}
-          title={
-            pendingAction?.type === "copy"
-              ? "Confirmar Cópia"
-              : "Confirmar Remoção"
-          }
+          title="Confirmar Remoção"
           message={getConfirmationMessage()}
-          confirmText={pendingAction?.type === "copy" ? "Copiar" : "Remover"}
+          confirmText="Remover"
           cancelText="Cancelar"
-          variant={pendingAction?.type === "remove" ? "danger" : "info"}
+          variant="danger"
         />
       </CardContent>
     </Card>

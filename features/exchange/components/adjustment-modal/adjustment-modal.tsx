@@ -96,7 +96,7 @@ export function AdjustmentModal({
       title="Ajuste Pelo Líquido"
       description="Ajuste o valor líquido por taxa ou quantidade"
       size="md"
-      showIcon
+      showIcon={false}
       icon={<InfoIcon className="size-3 text-white" />}
     >
       <div className="px-6 pt-4 pb-6 space-y-4">

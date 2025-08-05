@@ -1,14 +1,19 @@
 "use client"
 
+import { useState } from "react"
 import { Button, Card, CardContent, Input, Label, Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@mfe/cc-front-shared"
 import { SearchIcon } from "lucide-react"
 import { useDocumentStore, applyCPFMask, applyCNPJMask } from "../../hooks/use-document-search"
 import { useUserDetailsStore } from "../../hooks/use-user-details"
 import { CompactClientInfo } from "../compact-client-info/compact-client-info"
+import { Combobox } from "@/components/combobox"
+import { normalizeText } from "@/lib/utils"
 
 const LOJAS = [
   { value: "CPS_SH_DOM_PEDRO", label: "CPS SH DOM PEDRO" },
-  { value: "CPS_JUDIAI_SH", label: "CPS JUDIAI SH" }
+  { value: "CPS_JUDIAI_SH", label: "CPS JUDIAI SH" },
+  { value: "CE_MESA", label: "CE MESA" },
+  { value: "CI_ONLINE", label: "CI ONLINE" }
 ]
 
 const CANAIS_ATENDIMENTO = [
@@ -22,11 +27,27 @@ const CANAIS_ATENDIMENTO = [
   { value: "WHATSAPP", label: "WHATSAPP" }
 ]
 
+const PROMOCODES = [
+  "VIAGEM2024",
+  "DESCONTO10",
+  "BLACKFRIDAY",
+  "NATAL2024",
+  "FERIAS25",
+  "ESTUDANTE",
+  "PRIMEIRA_COMPRA",
+  "CLIENTE_VIP",
+  "CASHBACK15",
+  "SUPER_OFERTA",
+  "MEGA_DESCONTO",
+  "PROMO_ESPECIAL"
+]
+
 interface SharedExchangeSectionProps {
   commonData: {
     loja: string
     canalAtendimento: string
     naturezaOperacao: string
+    campanha: string
   }
   onCommonDataChange: (field: string, value: string) => void
 }
@@ -34,6 +55,8 @@ interface SharedExchangeSectionProps {
 export function SharedExchangeSection({ commonData, onCommonDataChange }: SharedExchangeSectionProps) {
   const { selectedType, documentValue, setSelectedType, setDocumentValue } = useDocumentStore()
   const { userDetails, isVisible: clientVisible, showUserDetails } = useUserDetailsStore()
+  const [showSuggestions, setShowSuggestions] = useState(false)
+  const [filteredPromocodes, setFilteredPromocodes] = useState<string[]>([])
 
   const handleDocumentChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value
@@ -63,6 +86,28 @@ export function SharedExchangeSection({ commonData, onCommonDataChange }: Shared
       default:
         return `Digite o ${selectedType}`
     }
+  }
+
+  const handleCampanhaChange = (value: string) => {
+    onCommonDataChange('campanha', value)
+
+    if (value.length > 0) {
+      const normalizedValue = normalizeText(value)
+      const filtered = PROMOCODES.filter(code =>
+        normalizeText(code).includes(normalizedValue)
+      )
+      setFilteredPromocodes(filtered)
+      setShowSuggestions(filtered.length > 0)
+    } else {
+      setShowSuggestions(false)
+      setFilteredPromocodes([])
+    }
+  }
+
+  const handlePromocodeSuggestionClick = (code: string) => {
+    onCommonDataChange('campanha', code)
+    setShowSuggestions(false)
+    setFilteredPromocodes([])
   }
 
   return (
@@ -115,8 +160,8 @@ export function SharedExchangeSection({ commonData, onCommonDataChange }: Shared
 
           {/* Campo de busca + configurações em linha */}
           <div className="grid grid-cols-12 gap-2 items-end">
-            {/* Documento - 4 colunas */}
-            <div className="col-span-4">
+            {/* Documento - 3 colunas */}
+            <div className="col-span-3">
               <Input
                 type="text"
                 value={documentValue}
@@ -138,28 +183,22 @@ export function SharedExchangeSection({ commonData, onCommonDataChange }: Shared
               </Button>
             </div>
 
-            {/* Loja - 4 colunas */}
-            <div className="col-span-4 space-y-1">
+            {/* Loja - 3 colunas */}
+            <div className="col-span-3 space-y-1">
               <Label className="text-xs text-gray-600">Loja</Label>
-              <Select
-                value={commonData.loja}
-                onValueChange={(value) => onCommonDataChange('loja', value)}
-              >
-                <SelectTrigger className="h-8 text-xs">
-                  <SelectValue />
-                </SelectTrigger>
-                <SelectContent>
-                  {LOJAS.map((loja) => (
-                    <SelectItem key={loja.value} value={loja.value}>
-                      {loja.label}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
+              <div className="relative">
+                <Combobox
+                  value={commonData.loja}
+                  handleChange={(value) => onCommonDataChange('loja', value)}
+                  options={LOJAS}
+                  placeholder="Selecione a loja"
+                  modifiWidth="w-full h-8"
+                />
+              </div>
             </div>
 
-            {/* Canal - 3 colunas */}
-            <div className="col-span-3 space-y-1">
+            {/* Canal - 2 colunas */}
+            <div className="col-span-2 space-y-1">
               <Label className="text-xs text-gray-600">Canal</Label>
               <Select
                 value={commonData.canalAtendimento}
@@ -176,6 +215,48 @@ export function SharedExchangeSection({ commonData, onCommonDataChange }: Shared
                   ))}
                 </SelectContent>
               </Select>
+            </div>
+
+            {/* Campo de Campanha - 3 colunas */}
+            <div className="col-span-3 space-y-1 relative">
+              <Label className="text-xs text-gray-600">Campanha</Label>
+              <Input
+                type="text"
+                value={commonData.campanha}
+                onChange={(e) => handleCampanhaChange(e.target.value)}
+                onFocus={() => {
+                  if (commonData.campanha.length > 0) {
+                    const normalizedValue = normalizeText(commonData.campanha)
+                    const filtered = PROMOCODES.filter(code =>
+                      normalizeText(code).includes(normalizedValue)
+                    )
+                    setFilteredPromocodes(filtered)
+                    setShowSuggestions(filtered.length > 0)
+                  }
+                }}
+                onBlur={() => {
+                  // Delay para permitir clique nas sugestões
+                  setTimeout(() => setShowSuggestions(false), 200)
+                }}
+                placeholder="Código promocional"
+                className="h-8 text-sm"
+                autoComplete="off"
+              />
+
+              {/* Sugestões de autocomplete */}
+              {showSuggestions && filteredPromocodes.length > 0 && (
+                <div className="absolute top-full left-0 right-0 z-10 bg-white border border-gray-200 rounded-md shadow-lg max-h-40 overflow-y-auto">
+                  {filteredPromocodes.map((code) => (
+                    <button
+                      key={code}
+                      onClick={() => handlePromocodeSuggestionClick(code)}
+                      className="w-full text-left px-3 py-2 text-sm hover:bg-gray-100 border-b border-gray-100 last:border-b-0"
+                    >
+                      {code}
+                    </button>
+                  ))}
+                </div>
+              )}
             </div>
           </div>
         </CardContent>

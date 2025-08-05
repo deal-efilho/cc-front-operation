@@ -3,7 +3,7 @@
 import * as React from "react";
 import { Check, ChevronDown } from "lucide-react";
 
-import { cn } from "@/lib/utils";
+import { cn, normalizeText } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import {
   Command,
@@ -48,7 +48,7 @@ export function Combobox({
           variant="outline"
           role="combobox"
           aria-expanded={open}
-          className={`${modifiWidth} w-[200px] justify-between h-[32px] py-[0px] px-[12px]`}
+          className={`${modifiWidth} justify-between py-[0px] px-[12px] ${modifiWidth.includes('h-') ? '' : 'h-[32px]'} ${modifiWidth.includes('w-') ? '' : 'w-[200px]'}`}
         >
           {value
             ? options.find((framework) => framework.value === value)?.label
@@ -57,10 +57,20 @@ export function Combobox({
         </Button>
       </PopoverTrigger>
       <PopoverContent className="w-[200px] p-0">
-        <Command>
+        <Command
+          filter={(value, search) => {
+            const option = options.find(opt => opt.value === value)
+            if (!option) return 0
+            
+            const normalizedLabel = normalizeText(option.label)
+            const normalizedSearch = normalizeText(search)
+            
+            return normalizedLabel.includes(normalizedSearch) ? 1 : 0
+          }}
+        >
           <CommandInput placeholder="Filtrar opções" className="h-8" />
           <CommandList>
-            <CommandEmpty>No framework found.</CommandEmpty>
+            <CommandEmpty>Nenhuma opção encontrada.</CommandEmpty>
             <CommandGroup>
               {options.map((framework) => (
                 <CommandItem
